@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Implementation Notes - MPMC Queue</title>
+    <title>🔬 Implementation Deep Dive - MPMC Queue</title>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -34,11 +34,18 @@
             border-radius: 5px;
             overflow-x: auto;
             border-left: 4px solid #667eea;
+            white-space: pre;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
         }
         code {
             background: #f4f4f4;
             padding: 0.2rem 0.4rem;
             border-radius: 3px;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+        }
+        pre code {
+            background: none;
+            padding: 0;
         }
         .nav-back {
             display: inline-block;
@@ -52,6 +59,20 @@
         .nav-back:hover {
             background: #5a67d8;
         }
+        h1, h2, h3, h4, h5, h6 {
+            color: #667eea;
+        }
+        h1 { font-size: 2rem; margin-top: 2rem; }
+        h2 { font-size: 1.5rem; margin-top: 1.5rem; border-bottom: 2px solid #eee; padding-bottom: 0.5rem; }
+        h3 { font-size: 1.3rem; margin-top: 1.3rem; }
+        h4 { font-size: 1.1rem; margin-top: 1.1rem; }
+        ul, ol { padding-left: 2rem; }
+        blockquote {
+            border-left: 4px solid #667eea;
+            margin: 1rem 0;
+            padding-left: 1rem;
+            color: #666;
+        }
     </style>
 </head>
 <body>
@@ -63,1085 +84,492 @@
     <a href="index.html" class="nav-back">← Back to Documentation Index</a>
     
     <div class="content">
-
-
-<h1>🔬 Implementation Deep Dive
-
-
-
+<h1>🔬 Implementation Deep Dive</h1>
+<br>
 This document explains the low-level implementation details, design decisions, and technical rationale behind the lockless MPMC queue.
-
-
-
-
-
-<h2>🧠 Core Algorithm Design
-
-
-
-
-
-<h3>Why Sequence-Based Coordination?
-
-
-
-The algorithm uses **sequence numbers** instead of traditional approaches for several critical reasons:
-
-
-
-
-<pre><code>rust
-
+<br>
+<h2>🧠 Core Algorithm Design</h2>
+<br>
+<h3>Why Sequence-Based Coordination?</h3>
+<br>
+The algorithm uses <strong>sequence numbers</strong> instead of traditional approaches for several critical reasons:
+<br>
+<pre><code>
 // ❌ Traditional flag-based approach (problematic):
-
-struct TraditionalSlot<T> {
-
+struct TraditionalSlot&lt;T&gt; {
     filled: AtomicBool,        // Separate flag
-
-    data: UnsafeCell<Option<T>>, // Separate data
-
+    data: UnsafeCell&lt;Option&lt;T&gt;&gt;, // Separate data
 }
-
-
 
 // Problems:
-
 // 1. ABA problem: flag can be reused
-
 // 2. Two atomic operations needed
-
 // 3. Race conditions between flag and data
-
 // 4. Memory ordering complexities
 
-
-
 // ✅ Our sequence-based approach (superior):
-
-struct Slot<T> {
-
+struct Slot&lt;T&gt; {
     sequence: AtomicUsize,              // Single coordination point
-
-    data: UnsafeCell<MaybeUninit<T>>,   // Raw storage
-
+    data: UnsafeCell&lt;MaybeUninit&lt;T&gt;&gt;,   // Raw storage
 }
-
-
 
 // Benefits:
-
 // 1. ABA immunity: sequences always advance
-
 // 2. Single atomic operation for state check
-
 // 3. Natural ordering guarantees
-
 // 4. Wait-free progress bounds
-
-
+</code></pre>
+<br>
+<h3>Memory Ordering Rationale</h3>
+<br>
 <pre><code>
-
-
-
-
-
-<h3>Memory Ordering Rationale
-
-
-
-
-<pre><code>rust
-
 // Producer sequence (carefully chosen orderings):
-
-pub fn send(&self, item: T) -> Result<(), T> {
-
+pub fn send(&amp;self, item: T) -&gt; Result&lt;(), T&gt; {
     loop {
-
         let head = self.producer_pos.head.load(Ordering::Relaxed);
-
         //                                    ^^^^^^^^
-
         // Relaxed: No synchronization needed, just get current position
-
         
-
         let seq = slot.sequence.load(Ordering::Acquire);
-
         //                           ^^^^^^^^^^^^^^^^
-
         // Acquire: Ensure we see all writes that happened-before
-
         // the sequence store from consumer
-
         
-
         match self.producer_pos.head.compare_exchange_weak(
-
             head, head.wrapping_add(1),
-
-            Ordering::Relaxed,  // Success: position update doesn't need sync
-
+            Ordering::Relaxed,  // Success: position update doesn&#x27;t need sync
             Ordering::Relaxed,  // Failure: just retry, no sync needed
-
         ) {
-
-            Ok(_) => {
-
+            Ok(_) =&gt; {
                 // Store data BEFORE updating sequence (critical ordering!)
-
                 unsafe { (*slot.data.get()).write(item); }
-
                 
-
                 slot.sequence.store(
-
                     expected_seq.wrapping_add(1), 
-
                     Ordering::Release  // Release: Make our data write visible
-
                 );                    // to consumers before they see new sequence
-
                 return Ok(());
-
             }
-
         }
-
     }
-
 }
-
-
+</code></pre>
+<br>
+<h3>ABA Problem Prevention</h3>
+<br>
 <pre><code>
-
-
-
-
-
-<h3>ABA Problem Prevention
-
-
-
-
-<pre><code>
-
 Classic ABA Problem (avoided by our design):
 
-
-
 Thread 1: Read value A from location X
-
 Thread 2: Change X from A to B  
-
 Thread 3: Change X from B back to A
-
 Thread 1: CAS succeeds thinking nothing changed!
 
-
-
 Our Solution - Monotonic Sequences:
-
 ┌─────────────────────────────────────────────────────────┐
-
 │ Sequence numbers NEVER repeat for the same slot:       │
-
 │                                                         │
-
 │ Slot 0: 0 → 1 → 8 → 9 → 16 → 17 → 24 → 25 → ...      │
-
 │         ↑   ↑   ↑   ↑    ↑    ↑     ↑    ↑             │
-
 │         │   │   │   │    │    │     │    │             │
-
 │      Init│Pro│Con│ Pro │ Con│ Pro │Con │ Pro           │
-
 │          │duc│sum│duc  │sum │duc  │sum │duc            │
-
 │          │er │er │er   │er  │er   │er  │er             │
-
 │                                                         │
-
 │ Even if same logical state, sequence differs!          │
-
 └─────────────────────────────────────────────────────────┘
-
-
+</code></pre>
+<br>
+<h2>🎯 Power-of-2 Capacity Optimization</h2>
+<br>
+<h3>Why Power-of-2 Matters</h3>
+<br>
 <pre><code>
-
-
-
-
-
-<h2>🎯 Power-of-2 Capacity Optimization
-
-
-
-
-
-<h3>Why Power-of-2 Matters
-
-
-
-
-<pre><code>rust
-
 // ❌ Expensive modulo operation:
-
-fn slow_index(position: usize, capacity: usize) -> usize {
-
+fn slow_index(position: usize, capacity: usize) -&gt; usize {
     position % capacity  // Division instruction ~20-40 cycles
-
 }
-
-
 
 // ✅ Fast bitwise AND operation:  
-
-fn fast_index(position: usize, mask: usize) -> usize {
-
-    position & mask      // Single AND instruction ~1 cycle
-
+fn fast_index(position: usize, mask: usize) -&gt; usize {
+    position &amp; mask      // Single AND instruction ~1 cycle
 }
-
-
 
 // Compiler optimization example:
-
 // Input: capacity = 1024
-
 let mask = capacity - 1;  // mask = 1023 = 0b1111111111
 
-
-
 // position = 5000
-
 // 5000 % 1024     = 904   (slow division)
-
-// 5000 & 1023     = 904   (fast bitwise AND)
-
-
+// 5000 &amp; 1023     = 904   (fast bitwise AND)
 
 // Binary demonstration:
-
 // 5000 = 0b1001110001000
-
 // 1023 = 0b0001111111111  
-
 // AND  = 0b0001110001000 = 904
-
-
+</code></pre>
+<br>
+<h3>Automatic Power-of-2 Rounding</h3>
+<br>
 <pre><code>
-
-
-
-
-
-<h3>Automatic Power-of-2 Rounding
-
-
-
-
-<pre><code>rust
-
-impl<T: Send> MpmcQueue<T> {
-
-    pub fn new(capacity: usize) -> Self {
-
-        assert!(capacity > 0, "Capacity must be greater than 0");
-
+impl&lt;T: Send&gt; MpmcQueue&lt;T&gt; {
+    pub fn new(capacity: usize) -&gt; Self {
+        assert!(capacity &gt; 0, &quot;Capacity must be greater than 0&quot;);
         
-
         // Round up to next power of 2 for optimal performance
-
         let capacity = capacity.next_power_of_two();
-
         let mask = capacity - 1;  // Efficient modulo mask
-
         
-
         // Examples:
-
         // Input: 100  → capacity: 128,  mask: 127
-
         // Input: 256  → capacity: 256,  mask: 255  
-
         // Input: 1000 → capacity: 1024, mask: 1023
-
     }
-
 }
-
-
+</code></pre>
+<br>
+<h2>🏗️ Memory Layout Engineering</h2>
+<br>
+<h3>Cache-Line Alignment Deep Dive</h3>
+<br>
 <pre><code>
-
-
-
-
-
-<h2>🏗️ Memory Layout Engineering
-
-
-
-
-
-<h3>Cache-Line Alignment Deep Dive
-
-
-
-
-<pre><code>
-
 Problem: False Sharing Performance Kill
 
-
-
 Before optimization (BAD):
-
 ┌─────────────────────────────────────────────────────────────┐ ← 64-byte cache line
-
 │ producer_head │ consumer_tail │ other_field │ another_field │
-
 │   (8 bytes)   │   (8 bytes)   │ (8 bytes)   │  (40 bytes)   │
-
 └─────────────────────────────────────────────────────────────┘
-
        ↑                ↑
-
    CPU Core 1      CPU Core 2
-
    
-
 When Core 1 updates producer_head:
-
-1. Entire cache line becomes "dirty"
-
-2. Core 2's cache is invalidated  
-
+1. Entire cache line becomes &quot;dirty&quot;
+2. Core 2&#x27;s cache is invalidated  
 3. Core 2 must reload entire cache line
-
 4. ~100ns penalty + memory bus contention
 
-
-
 After optimization (GOOD):
-
 ┌─────────────────────────────────────────────────────────────┐ ← Cache Line 1
-
 │             producer_head                                   │
-
 │ (8 bytes + 56 bytes padding)                               │
-
 └─────────────────────────────────────────────────────────────┘
-
        ↑
-
    CPU Core 1
 
-
-
 ┌─────────────────────────────────────────────────────────────┐ ← Cache Line 2
-
 │             consumer_tail                                   │  
-
 │ (8 bytes + 56 bytes padding)                               │
-
 └─────────────────────────────────────────────────────────────┘
-
        ↑
-
    CPU Core 2
 
-
-
 Now updates are independent: ~40% performance improvement!
-
-
+</code></pre>
+<br>
+<h3>Slot Memory Layout</h3>
+<br>
 <pre><code>
-
-
-
-
-
-<h3>Slot Memory Layout
-
-
-
-
-<pre><code>rust
-
 #[repr(align(64))]  // Force 64-byte alignment
-
-struct Slot<T> {
-
+struct Slot&lt;T&gt; {
     sequence: AtomicUsize,           // 8 bytes
-
-    data: UnsafeCell<MaybeUninit<T>>, // sizeof(T) bytes
-
+    data: UnsafeCell&lt;MaybeUninit&lt;T&gt;&gt;, // sizeof(T) bytes
     // Implicit padding to 64-byte boundary
-
 }
 
-
-
-// Memory layout for Slot<u64>:
-
+// Memory layout for Slot&lt;u64&gt;:
 // Offset 0-7:   sequence (AtomicUsize)
-
 // Offset 8-15:  data (u64)  
-
 // Offset 16-63: padding (48 bytes)
-
 //
-
 // Each slot gets its own cache line when possible,
-
 // minimizing contention between adjacent slots
-
-
+</code></pre>
+<br>
+<h2>⚡ Atomic Operations Strategy</h2>
+<br>
+<h3>Compare-Exchange-Weak vs Strong</h3>
+<br>
 <pre><code>
-
-
-
-
-
-<h2>⚡ Atomic Operations Strategy
-
-
-
-
-
-<h3>Compare-Exchange-Weak vs Strong
-
-
-
-
-<pre><code>rust
-
 // Why we use compare_exchange_weak:
 
-
-
 // ❌ compare_exchange (strong) - not optimal:
-
 match atomic.compare_exchange(
-
     expected, new,
-
     Ordering::Release, Ordering::Relaxed
-
 ) {
-
-    Ok(prev) => { /* always succeeds if values match */ },
-
-    Err(prev) => { /* retry needed */ },
-
+    Ok(prev) =&gt; { /* always succeeds if values match */ },
+    Err(prev) =&gt; { /* retry needed */ },
 }
-
-
 
 // ✅ compare_exchange_weak (better) - our choice:
-
 match atomic.compare_exchange_weak(
-
     expected, new, 
-
     Ordering::Release, Ordering::Relaxed
-
 ) {
-
-    Ok(prev) => { /* success */ },
-
-    Err(prev) => { /* may fail spuriously - but that's OK! */ },
-
+    Ok(prev) =&gt; { /* success */ },
+    Err(prev) =&gt; { /* may fail spuriously - but that&#x27;s OK! */ },
 }
-
-
 
 // Benefits of weak version:
-
 // 1. More efficient on ARM/PowerPC (no retry loop in hardware)
-
 // 2. Allows LL/SC architectures to be more efficient
-
-// 3. We're already in a retry loop, so spurious failures are fine
-
+// 3. We&#x27;re already in a retry loop, so spurious failures are fine
 // 4. Better power consumption on mobile processors
-
-
+</code></pre>
+<br>
+<h3>Memory Ordering Minimization</h3>
+<br>
 <pre><code>
-
-
-
-
-
-<h3>Memory Ordering Minimization
-
-
-
-
-<pre><code>rust
-
 // Our ordering strategy (carefully optimized):
 
-
-
 // Relaxed operations (cheapest):
-
 let head = self.producer_pos.head.load(Ordering::Relaxed);
-
 // Just need the value, no synchronization required
 
-
-
 // Acquire operations (moderate cost):  
-
 let seq = slot.sequence.load(Ordering::Acquire);
-
 // Need to see all previous writes that led to this sequence value
 
-
-
 // Release operations (moderate cost):
-
 slot.sequence.store(new_seq, Ordering::Release);
-
 // Make our data write visible before consumers see new sequence
 
-
-
 // We avoid:
-
 // - SeqCst: Too expensive, unnecessary global ordering
-
 // - AcqRel: Overkill for our use case
-
 // - Fencing: Compiler barriers sufficient
-
-
+</code></pre>
+<br>
+<h2>🔒 Safety Guarantees</h2>
+<br>
+<h3>Memory Safety Without Garbage Collection</h3>
+<br>
 <pre><code>
-
-
-
-
-
-<h2>🔒 Safety Guarantees
-
-
-
-
-
-<h3>Memory Safety Without Garbage Collection
-
-
-
-
-<pre><code>rust
-
 // Challenge: How to safely manage T without GC?
 
-
-
 // ❌ Naive approach (unsafe):
-
-struct BadSlot<T> {
-
+struct BadSlot&lt;T&gt; {
     data: *mut T,  // Raw pointer - can dangle!
-
 }
-
-
 
 // ✅ Our approach (safe + efficient):
-
-struct Slot<T> {
-
+struct Slot&lt;T&gt; {
     sequence: AtomicUsize,              // Coordination
-
-    data: UnsafeCell<MaybeUninit<T>>,   // Safe uninitialized storage
-
+    data: UnsafeCell&lt;MaybeUninit&lt;T&gt;&gt;,   // Safe uninitialized storage
 }
-
-
 
 // Safety invariants we maintain:
-
 // 1. Data is only written when sequence == expected
-
 // 2. Data is only read when sequence == expected + 1  
-
 // 3. Data is properly dropped in queue destructor
-
 // 4. No access races due to sequence coordination
 
-
-
-impl<T> Drop for MpmcQueue<T> {
-
-    fn drop(&mut self) {
-
+impl&lt;T&gt; Drop for MpmcQueue&lt;T&gt; {
+    fn drop(&amp;mut self) {
         // Safely drain all remaining items
-
         while !self.is_empty_unchecked() {
-
             let tail = self.consumer_pos.tail.load(Ordering::Relaxed);
-
-            let slot = &self.buffer[tail & self.mask];
-
+            let slot = &amp;self.buffer[tail &amp; self.mask];
             let seq = slot.sequence.load(Ordering::Acquire);
-
             
-
             if seq == tail.wrapping_add(1) {
-
                 // Safe to read and drop data
-
                 if self.consumer_pos.tail.compare_exchange_weak(
-
                     tail, tail.wrapping_add(1),
-
                     Ordering::Relaxed, Ordering::Relaxed,
-
                 ).is_ok() {
-
                     unsafe {
-
                         (*slot.data.get()).assume_init_drop();
-
                     }
-
                     slot.sequence.store(
-
                         tail.wrapping_add(self.capacity),
-
                         Ordering::Release,
-
                     );
-
                 }
-
             } else {
-
                 break; // Inconsistent state, stop
-
             }
-
         }
-
     }
-
 }
-
-
+</code></pre>
+<br>
+<h3>Send/Sync Trait Implementation</h3>
+<br>
 <pre><code>
-
-
-
-
-
-<h3>Send/Sync Trait Implementation
-
-
-
-
-<pre><code>rust
-
 // Why our unsafe impls are actually safe:
 
-
-
-unsafe impl<T: Send> Send for MpmcQueue<T> {}
-
+unsafe impl&lt;T: Send&gt; Send for MpmcQueue&lt;T&gt; {}
 // Safe because:
-
 // - All internal state is properly synchronized with atomics
-
 // - T: Send means individual items can be sent between threads
-
 // - Our algorithm ensures no data races
 
-
-
-unsafe impl<T: Send> Sync for MpmcQueue<T> {}  
-
+unsafe impl&lt;T: Send&gt; Sync for MpmcQueue&lt;T&gt; {}  
 // Safe because:
-
 // - Multiple threads can safely access queue concurrently
-
 // - All operations are atomic or properly synchronized
-
 // - No shared mutable state without synchronization
-
 // - Sequence numbers prevent all race conditions
-
-
+</code></pre>
+<br>
+<h2>📊 Performance Engineering</h2>
+<br>
+<h3>Branch Prediction Optimization</h3>
+<br>
 <pre><code>
-
-
-
-
-
-<h2>📊 Performance Engineering
-
-
-
-
-
-<h3>Branch Prediction Optimization
-
-
-
-
-<pre><code>rust
-
 // Our code is designed to be branch-predictor friendly:
 
-
-
-pub fn send(&self, item: T) -> Result<(), T> {
-
+pub fn send(&amp;self, item: T) -&gt; Result&lt;(), T&gt; {
     loop {  // Hot loop - CPU will predict this well
-
         let head = self.producer_pos.head.load(Ordering::Relaxed);
-
-        let slot = &self.buffer[head & self.mask];
-
+        let slot = &amp;self.buffer[head &amp; self.mask];
         let seq = slot.sequence.load(Ordering::Acquire);
-
         let expected_seq = head;
-
         
-
         // Common case first (branch predictor learns this):
-
-        match seq.cmp(&expected_seq) {
-
-            std::cmp::Ordering::Equal => {
-
+        match seq.cmp(&amp;expected_seq) {
+            std::cmp::Ordering::Equal =&gt; {
                 // MOST COMMON PATH - predictor learns this
-
                 match self.producer_pos.head.compare_exchange_weak(
-
                     head, head.wrapping_add(1),
-
                     Ordering::Relaxed, Ordering::Relaxed,
-
                 ) {
-
-                    Ok(_) => {
-
+                    Ok(_) =&gt; {
                         // SUCCESS PATH - also common
-
                         unsafe { (*slot.data.get()).write(item); }
-
                         slot.sequence.store(
-
                             expected_seq.wrapping_add(1), 
-
                             Ordering::Release
-
                         );
-
                         return Ok(());
-
                     }
-
-                    Err(_) => continue, // Retry - less common
-
+                    Err(_) =&gt; continue, // Retry - less common
                 }
-
             }
-
-            std::cmp::Ordering::Less => {
-
+            std::cmp::Ordering::Less =&gt; {
                 // Queue full check - uncommon in well-sized queues
-
                 let tail = self.consumer_pos.tail.load(Ordering::Acquire);
-
-                if head.wrapping_sub(tail) >= self.capacity {
-
+                if head.wrapping_sub(tail) &gt;= self.capacity {
                     return Err(item);
-
                 }
-
                 continue;
-
             }
-
-            std::cmp::Ordering::Greater => {
-
+            std::cmp::Ordering::Greater =&gt; {
                 // Race condition - very uncommon
-
                 continue;
-
             }
-
         }
-
     }
-
 }
-
-
+</code></pre>
+<br>
+<h3>CPU Cache Optimization</h3>
+<br>
 <pre><code>
-
-
-
-
-
-<h3>CPU Cache Optimization
-
-
-
-
-<pre><code>rust
-
 // Prefetching strategy (implicit in our design):
 
-
-
 // 1. Sequential access patterns for ring buffer
-
-let slot = &self.buffer[position & self.mask];
-
+let slot = &amp;self.buffer[position &amp; self.mask];
 // CPU prefetcher sees this pattern and loads nearby slots
 
-
-
 // 2. Temporal locality  
-
 // Producers tend to access consecutive slots
-
 // Consumers tend to access consecutive slots
-
 // CPU caches exploit this
 
-
-
 // 3. Spatial locality
-
 // 64-byte aligned slots fit cache line boundaries
-
 // Related data accessed together
 
-
-
 // 4. Cache line utilization
-
 #[repr(align(64))]
-
 struct ProducerPos {
-
     head: AtomicUsize,  // 8 bytes used
-
     // 56 bytes padding - prevents false sharing
-
 }
-
-
+</code></pre>
+<br>
+<h2>🐛 Common Pitfalls and Solutions</h2>
+<br>
+<h3>Pitfall 1: Sequence Number Overflow</h3>
+<br>
 <pre><code>
-
-
-
-
-
-<h2>🐛 Common Pitfalls and Solutions
-
-
-
-
-
-<h3>Pitfall 1: Sequence Number Overflow
-
-
-
-
-<pre><code>rust
-
 // Problem: What happens when sequence numbers wrap?
-
 // Solution: Wrapping arithmetic is intentional and safe!
 
-
-
 let seq = slot.sequence.load(Ordering::Acquire);
-
 let expected = position.wrapping_add(1);  // Handles overflow correctly
 
-
-
 // Example with u8 for clarity (we use usize):
-
 // position = 255, expected = 256 → wraps to 0  
-
 // This is correct behavior and maintains ordering
-
-
+</code></pre>
+<br>
+<h3>Pitfall 2: Memory Ordering Mistakes</h3>
+<br>
 <pre><code>
-
-
-
-
-
-<h3>Pitfall 2: Memory Ordering Mistakes
-
-
-
-
-<pre><code>rust
-
 // ❌ Wrong - data race possible:
-
 unsafe { (*slot.data.get()).write(item); }
-
 slot.sequence.store(new_seq, Ordering::Relaxed);  // Too weak!
 
-
-
 // ✅ Correct - properly synchronized:
-
 unsafe { (*slot.data.get()).write(item); }
-
 slot.sequence.store(new_seq, Ordering::Release);  // Makes write visible
-
-
+</code></pre>
+<br>
+<h3>Pitfall 3: Capacity Must Be Power-of-2</h3>
+<br>
 <pre><code>
-
-
-
-
-
-<h3>Pitfall 3: Capacity Must Be Power-of-2
-
-
-
-
-<pre><code>rust
-
 // ❌ Wrong - will panic or perform poorly:
-
 let queue = MpmcQueue::new(1000);  // Not power of 2!
 
-
-
 // ✅ Correct - automatically rounded:
-
 let queue = MpmcQueue::new(1000);  // Becomes 1024 internally
-
 assert_eq!(queue.capacity(), 1024);
-
-
+</code></pre>
+<br>
+<h2>🔧 Debugging and Profiling</h2>
+<br>
+<h3>Performance Profiling Tips</h3>
+<br>
 <pre><code>
-
-
-
-
-
-<h2>🔧 Debugging and Profiling
-
-
-
-
-
-<h3>Performance Profiling Tips
-
-
-
-
-<pre><code>bash
-
-
-
-<h1>CPU profiling with perf:
-
+# CPU profiling with perf:
 perf record -g --call-graph=dwarf target/release/examples/benchmark
-
 perf report --stdio
 
+# Key metrics to watch:
+# - Cache miss rate (&lt;5% is good)
+# - Branch prediction accuracy (&gt;95% is good)  
+# - CPI (Cycles Per Instruction) (&lt;2.0 is good)
 
-
-
-
-<h1>Key metrics to watch:
-
-
-
-<h1>- Cache miss rate (<5% is good)
-
-
-
-<h1>- Branch prediction accuracy (>95% is good)  
-
-
-
-<h1>- CPI (Cycles Per Instruction) (<2.0 is good)
-
-
-
-
-
-<h1>Memory profiling with valgrind:
-
+# Memory profiling with valgrind:
 valgrind --tool=massif target/release/examples/benchmark
 
-
-
-
-
-<h1>Look for:
-
-
-
-<h1>- No memory leaks
-
-
-
-<h1>- Reasonable peak memory usage
-
-
-
-<h1>- No excessive allocations
-
-
+# Look for:
+# - No memory leaks
+# - Reasonable peak memory usage
+# - No excessive allocations
+</code></pre>
+<br>
+<h3>Common Performance Issues</h3>
+<br>
 <pre><code>
-
-
-
-
-
-<h3>Common Performance Issues
-
-
-
-
-<pre><code>rust
-
 // Issue 1: Queue too small (frequent full condition)
-
 let queue = MpmcQueue::new(16);  // Too small for high throughput
-
 // Solution: Increase capacity to reduce contention
 
-
-
 // Issue 2: Too many producers/consumers
-
-// With >8 threads per operation, consider multiple queues
-
-let queues: Vec<_> = (0..4).map(|_| MpmcQueue::new(256)).collect();
-
-
+// With &gt;8 threads per operation, consider multiple queues
+let queues: Vec&lt;_&gt; = (0..4).map(|_| MpmcQueue::new(256)).collect();
 
 // Issue 3: Item size too large  
-
 struct LargeItem([u8; 4096]);  // Each item = 4KB
-
-// Solution: Use Arc<T> or Box<T> to store large items indirectly
-
-
-<pre><code>
-
-
-
+// Solution: Use Arc&lt;T&gt; or Box&lt;T&gt; to store large items indirectly
+</code></pre>
+<br>
 This deep dive reveals the sophisticated engineering behind the lockless MPMC queue, showing how careful attention to low-level details enables exceptional performance while maintaining safety guarantees.
-</div></body></html>
+    </div>
+</body>
+</html>
