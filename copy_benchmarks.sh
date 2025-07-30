@@ -368,10 +368,14 @@ create_html_doc() {
             padding: 0.2rem 0.4rem;
             border-radius: 3px;
             font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            display: block;
+            line-height: 1em;
         }
         pre code {
             background: none;
             padding: 0;
+            display: block;
+            line-height: 1em;
         }
         .nav-back {
             display: inline-block;
