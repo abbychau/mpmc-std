@@ -9,10 +9,38 @@
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             line-height: 1.6;
             color: #333;
+            margin: 0;
+            padding: 0;
+            background: 
+                linear-gradient(90deg, rgba(102, 126, 234, 0.08) 0%, transparent 50%, rgba(118, 75, 162, 0.08) 100%),
+                repeating-linear-gradient(
+                    45deg,
+                    transparent,
+                    transparent 30px,
+                    rgba(102, 126, 234, 0.06) 30px,
+                    rgba(102, 126, 234, 0.06) 32px,
+                    transparent 32px,
+                    transparent 60px
+                ),
+                repeating-linear-gradient(
+                    -45deg,
+                    transparent,
+                    transparent 30px,
+                    rgba(118, 75, 162, 0.06) 30px,
+                    rgba(118, 75, 162, 0.06) 32px,
+                    transparent 32px,
+                    transparent 60px
+                ),
+                radial-gradient(circle at 25% 25%, rgba(102, 126, 234, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, rgba(118, 75, 162, 0.03) 0%, transparent 50%),
+                #f8fafc;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        .container {
             max-width: 1000px;
             margin: 0 auto;
             padding: 20px;
-            background: #f8f9fa;
         }
         .header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -28,6 +56,7 @@
             padding: 2rem;
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
         }
         pre {
             background: #f4f4f4;
@@ -56,10 +85,12 @@
             display: inline-block;
             background: #667eea;
             color: white;
-            padding: 0.5rem 1rem;
+            padding: 0.75rem 1.5rem;
             text-decoration: none;
             border-radius: 5px;
-            margin-bottom: 1rem;
+            margin: 2rem 0;
+            font-weight: 500;
+            transition: background 0.2s ease;
         }
         .nav-back:hover {
             background: #5a67d8;
@@ -100,32 +131,57 @@
             padding-left: 1rem;
             color: #666;
         }
+        .footer {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: rgba(255, 255, 255, 0.9);
+            text-align: center;
+            padding: 3rem 2rem 2rem 2rem;
+            margin-top: 3rem;
+            border-top: 3px solid #667eea;
+            position: relative;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #667eea, #764ba2, #667eea, transparent);
+        }
+        .footer p {
+            margin: 0.5rem 0;
+            opacity: 0.8;
+        }
+        .footer .footer-brand {
+            font-size: 1.1rem;
+            font-weight: 500;
+            opacity: 1;
+            margin-bottom: 1rem;
+        }
     </style>
 </head>
 <body>
-    <div class="header">
-        <a href="https://github.com/abbychau/mpmc-std" class="github-corner" target="_blank" rel="noopener noreferrer">
-            <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 250 250" fill="#151513" style="position: absolute; top: 0; right: 0">
-            <path d="M0 0l115 115h15l12 27 108 108V0z" fill="#000"/>
-            <path class="octo-arm" d="M128 109c-15-9-9-19-9-19 3-7 2-11 2-11-1-7 3-2 3-2 4 5 2 11 2 11-3 10 5 15 9 16" style="-webkit-transform-origin: 130px 106px; transform-origin: 130px 106px"/>
-            <path class="octo-body" d="M115 115s4 2 5 0l14-14c3-2 6-3 8-3-8-11-15-24 2-41 5-5 10-7 16-7 1-2 3-7 12-11 0 0 5 3 7 16 4 2 8 5 12 9s7 8 9 12c14 3 17 7 17 7-4 8-9 11-11 11 0 6-2 11-7 16-16 16-30 10-41 2 0 3-1 7-5 11l-12 11c-1 1 1 5 1 5z"/>
-            </svg>
-        </a>
-        <h1>🔬 Implementation Deep Dive</h1>
-        <p>Technical details and performance engineering</p>
-    </div>
-    
-    <a href="index.html" class="nav-back">← Back to Documentation Index</a>
-    
-    <div class="content">
+    <div class="container">
+        <div class="header">
+            <a href="https://github.com/abbychau/mpmc-std" class="github-corner" target="_blank" rel="noopener noreferrer">
+                <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 250 250" fill="#151513" style="position: absolute; top: 0; right: 0">
+                <path d="M0 0l115 115h15l12 27 108 108V0z" fill="#000"/>
+                <path class="octo-arm" d="M128 109c-15-9-9-19-9-19 3-7 2-11 2-11-1-7 3-2 3-2 4 5 2 11 2 11-3 10 5 15 9 16" style="-webkit-transform-origin: 130px 106px; transform-origin: 130px 106px"/>
+                <path class="octo-body" d="M115 115s4 2 5 0l14-14c3-2 6-3 8-3-8-11-15-24 2-41 5-5 10-7 16-7 1-2 3-7 12-11 0 0 5 3 7 16 4 2 8 5 12 9s7 8 9 12c14 3 17 7 17 7-4 8-9 11-11 11 0 6-2 11-7 16-16 16-30 10-41 2 0 3-1 7-5 11l-12 11c-1 1 1 5 1 5z"/>
+                </svg>
+            </a>
+            <h1>🔬 Implementation Deep Dive</h1>
+            <p>Technical details and performance engineering</p>
+        </div>
+        
+        <div class="content">
 <h1>🔬 Implementation Deep Dive</h1>
-<br>
 This document explains the low-level implementation details, design decisions, and technical rationale behind the lockless MPMC queue.
-<br>
 <h2>🧠 Core Algorithm Design</h2>
-<br>
 <h3>Why Sequence-Based Coordination?</h3>
-<br>
 The algorithm uses <strong>sequence numbers</strong> instead of traditional approaches for several critical reasons:
 <br>
 <pre><code>
@@ -153,9 +209,7 @@ struct Slot&lt;T&gt; {
 // 3. Natural ordering guarantees
 // 4. Wait-free progress bounds
 </code></pre>
-<br>
 <h3>Memory Ordering Rationale</h3>
-<br>
 <pre><code>
 // Producer sequence (carefully chosen orderings):
 pub fn send(&amp;self, item: T) -&gt; Result&lt;(), T&gt; {
@@ -188,9 +242,7 @@ pub fn send(&amp;self, item: T) -&gt; Result&lt;(), T&gt; {
     }
 }
 </code></pre>
-<br>
 <h3>ABA Problem Prevention</h3>
-<br>
 <pre><code>
 Classic ABA Problem (avoided by our design):
 
@@ -213,11 +265,8 @@ Our Solution - Monotonic Sequences:
 │ Even if same logical state, sequence differs!          │
 └─────────────────────────────────────────────────────────┘
 </code></pre>
-<br>
 <h2>🎯 Power-of-2 Capacity Optimization</h2>
-<br>
 <h3>Why Power-of-2 Matters</h3>
-<br>
 <pre><code>
 // ❌ Expensive modulo operation:
 fn slow_index(position: usize, capacity: usize) -&gt; usize {
@@ -242,9 +291,7 @@ let mask = capacity - 1;  // mask = 1023 = 0b1111111111
 // 1023 = 0b0001111111111  
 // AND  = 0b0001110001000 = 904
 </code></pre>
-<br>
 <h3>Automatic Power-of-2 Rounding</h3>
-<br>
 <pre><code>
 impl&lt;T: Send&gt; MpmcQueue&lt;T&gt; {
     pub fn new(capacity: usize) -&gt; Self {
@@ -261,11 +308,8 @@ impl&lt;T: Send&gt; MpmcQueue&lt;T&gt; {
     }
 }
 </code></pre>
-<br>
 <h2>🏗️ Memory Layout Engineering</h2>
-<br>
 <h3>Cache-Line Alignment Deep Dive</h3>
-<br>
 <pre><code>
 Problem: False Sharing Performance Kill
 
@@ -300,9 +344,7 @@ After optimization (GOOD):
 
 Now updates are independent: ~40% performance improvement!
 </code></pre>
-<br>
 <h3>Slot Memory Layout</h3>
-<br>
 <pre><code>
 #[repr(align(64))]  // Force 64-byte alignment
 struct Slot&lt;T&gt; {
@@ -319,11 +361,8 @@ struct Slot&lt;T&gt; {
 // Each slot gets its own cache line when possible,
 // minimizing contention between adjacent slots
 </code></pre>
-<br>
 <h2>⚡ Atomic Operations Strategy</h2>
-<br>
 <h3>Compare-Exchange-Weak vs Strong</h3>
-<br>
 <pre><code>
 // Why we use compare_exchange_weak:
 
@@ -351,9 +390,7 @@ match atomic.compare_exchange_weak(
 // 3. We&#x27;re already in a retry loop, so spurious failures are fine
 // 4. Better power consumption on mobile processors
 </code></pre>
-<br>
 <h3>Memory Ordering Minimization</h3>
-<br>
 <pre><code>
 // Our ordering strategy (carefully optimized):
 
@@ -374,11 +411,8 @@ slot.sequence.store(new_seq, Ordering::Release);
 // - AcqRel: Overkill for our use case
 // - Fencing: Compiler barriers sufficient
 </code></pre>
-<br>
 <h2>🔒 Safety Guarantees</h2>
-<br>
 <h3>Memory Safety Without Garbage Collection</h3>
-<br>
 <pre><code>
 // Challenge: How to safely manage T without GC?
 
@@ -428,9 +462,7 @@ impl&lt;T&gt; Drop for MpmcQueue&lt;T&gt; {
     }
 }
 </code></pre>
-<br>
 <h3>Send/Sync Trait Implementation</h3>
-<br>
 <pre><code>
 // Why our unsafe impls are actually safe:
 
@@ -447,11 +479,8 @@ unsafe impl&lt;T: Send&gt; Sync for MpmcQueue&lt;T&gt; {}
 // - No shared mutable state without synchronization
 // - Sequence numbers prevent all race conditions
 </code></pre>
-<br>
 <h2>📊 Performance Engineering</h2>
-<br>
 <h3>Branch Prediction Optimization</h3>
-<br>
 <pre><code>
 // Our code is designed to be branch-predictor friendly:
 
@@ -498,9 +527,7 @@ pub fn send(&amp;self, item: T) -&gt; Result&lt;(), T&gt; {
     }
 }
 </code></pre>
-<br>
 <h3>CPU Cache Optimization</h3>
-<br>
 <pre><code>
 // Prefetching strategy (implicit in our design):
 
@@ -524,11 +551,8 @@ struct ProducerPos {
     // 56 bytes padding - prevents false sharing
 }
 </code></pre>
-<br>
 <h2>🐛 Common Pitfalls and Solutions</h2>
-<br>
 <h3>Pitfall 1: Sequence Number Overflow</h3>
-<br>
 <pre><code>
 // Problem: What happens when sequence numbers wrap?
 // Solution: Wrapping arithmetic is intentional and safe!
@@ -540,9 +564,7 @@ let expected = position.wrapping_add(1);  // Handles overflow correctly
 // position = 255, expected = 256 → wraps to 0  
 // This is correct behavior and maintains ordering
 </code></pre>
-<br>
 <h3>Pitfall 2: Memory Ordering Mistakes</h3>
-<br>
 <pre><code>
 // ❌ Wrong - data race possible:
 unsafe { (*slot.data.get()).write(item); }
@@ -552,9 +574,7 @@ slot.sequence.store(new_seq, Ordering::Relaxed);  // Too weak!
 unsafe { (*slot.data.get()).write(item); }
 slot.sequence.store(new_seq, Ordering::Release);  // Makes write visible
 </code></pre>
-<br>
 <h3>Pitfall 3: Capacity Must Be Power-of-2</h3>
-<br>
 <pre><code>
 // ❌ Wrong - will panic or perform poorly:
 let queue = MpmcQueue::new(1000);  // Not power of 2!
@@ -563,11 +583,8 @@ let queue = MpmcQueue::new(1000);  // Not power of 2!
 let queue = MpmcQueue::new(1000);  // Becomes 1024 internally
 assert_eq!(queue.capacity(), 1024);
 </code></pre>
-<br>
 <h2>🔧 Debugging and Profiling</h2>
-<br>
 <h3>Performance Profiling Tips</h3>
-<br>
 <pre><code>
 # CPU profiling with perf:
 perf record -g --call-graph=dwarf target/release/examples/benchmark
@@ -586,9 +603,7 @@ valgrind --tool=massif target/release/examples/benchmark
 # - Reasonable peak memory usage
 # - No excessive allocations
 </code></pre>
-<br>
 <h3>Common Performance Issues</h3>
-<br>
 <pre><code>
 // Issue 1: Queue too small (frequent full condition)
 let queue = MpmcQueue::new(16);  // Too small for high throughput
@@ -604,6 +619,19 @@ struct LargeItem([u8; 4096]);  // Each item = 4KB
 </code></pre>
 <br>
 This deep dive reveals the sophisticated engineering behind the lockless MPMC queue, showing how careful attention to low-level details enables exceptional performance while maintaining safety guarantees.
+        </div>
+        
+        <div style="text-align: center; margin-bottom: 2rem;">
+            <a href="index.html" class="nav-back">← Back to Documentation Index</a>
+        </div>
+    </div>
+
+    <div class="footer">
+        <div class="footer-brand">MPMC Queue - High-Performance Lockless Data Structure</div>
+        <p>Built with Rust • Benchmarked with Criterion.rs • Optimized for Modern Hardware</p>
+        <p style="font-size: 0.9rem; margin-top: 1rem;">
+            Research-grade implementation combining Michael & Scott, LMAX Disruptor, and modern optimization techniques
+        </p>
     </div>
 </body>
 </html>

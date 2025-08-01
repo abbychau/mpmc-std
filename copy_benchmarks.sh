@@ -41,10 +41,38 @@ cat > docs/index.html << 'EOF'
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             line-height: 1.6;
             color: #333;
+            margin: 0;
+            padding: 0;
+            background: 
+                linear-gradient(90deg, rgba(102, 126, 234, 0.08) 0%, transparent 50%, rgba(118, 75, 162, 0.08) 100%),
+                repeating-linear-gradient(
+                    45deg,
+                    transparent,
+                    transparent 30px,
+                    rgba(102, 126, 234, 0.06) 30px,
+                    rgba(102, 126, 234, 0.06) 32px,
+                    transparent 32px,
+                    transparent 60px
+                ),
+                repeating-linear-gradient(
+                    -45deg,
+                    transparent,
+                    transparent 30px,
+                    rgba(118, 75, 162, 0.06) 30px,
+                    rgba(118, 75, 162, 0.06) 32px,
+                    transparent 32px,
+                    transparent 60px
+                ),
+                radial-gradient(circle at 25% 25%, rgba(102, 126, 234, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, rgba(118, 75, 162, 0.03) 0%, transparent 50%),
+                #f8fafc;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
-            background: #f8f9fa;
         }
         .header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -154,9 +182,19 @@ cat > docs/index.html << 'EOF'
         }
         .benchmark-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: repeat(3, 1fr);
             gap: 1rem;
             margin-top: 1rem;
+        }
+        @media (max-width: 768px) {
+            .benchmark-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        @media (max-width: 1024px) and (min-width: 769px) {
+            .benchmark-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
         .benchmark-item {
             background: #f8f9fa;
@@ -176,24 +214,48 @@ cat > docs/index.html << 'EOF'
             text-decoration: underline;
         }
         .footer {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: rgba(255, 255, 255, 0.9);
             text-align: center;
-            padding: 2rem;
-            color: #666;
-            border-top: 1px solid #eee;
-            margin-top: 2rem;
+            padding: 3rem 2rem 2rem 2rem;
+            margin-top: 3rem;
+            border-top: 3px solid #667eea;
+            position: relative;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #667eea, #764ba2, #667eea, transparent);
+        }
+        .footer p {
+            margin: 0.5rem 0;
+            opacity: 0.8;
+        }
+        .footer .footer-brand {
+            font-size: 1.1rem;
+            font-weight: 500;
+            opacity: 1;
+            margin-bottom: 1rem;
         }
     </style>
 </head>
 <body>
-    <div class="header">
-        <a href="https://github.com/abbychau/mpmc-std" class="github-corner" target="_blank" rel="noopener noreferrer">
-            <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 250 250" fill="#151513" style="position: absolute; top: 0; right: 0">
-            <path d="M0 0l115 115h15l12 27 108 108V0z" fill="#000"/>
-            <path class="octo-arm" d="M128 109c-15-9-9-19-9-19 3-7 2-11 2-11-1-7 3-2 3-2 4 5 2 11 2 11-3 10 5 15 9 16" style="-webkit-transform-origin: 130px 106px; transform-origin: 130px 106px"/>
-            <path class="octo-body" d="M115 115s4 2 5 0l14-14c3-2 6-3 8-3-8-11-15-24 2-41 5-5 10-7 16-7 1-2 3-7 12-11 0 0 5 3 7 16 4 2 8 5 12 9s7 8 9 12c14 3 17 7 17 7-4 8-9 11-11 11 0 6-2 11-7 16-16 16-30 10-41 2 0 3-1 7-5 11l-12 11c-1 1 1 5 1 5z"/>
-            </svg>
-        </a>
-        <h1>🚀 MPMC Queue Documentation</h1>
+    <div class="container">
+        <div class="header">
+            <a href="https://github.com/abbychau/mpmc-std" class="github-corner" target="_blank" rel="noopener noreferrer">
+                <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 250 250" fill="#151513" style="position: absolute; top: 0; right: 0">
+                <path d="M0 0l115 115h15l12 27 108 108V0z" fill="#000"/>
+                <path class="octo-arm" d="M128 109c-15-9-9-19-9-19 3-7 2-11 2-11-1-7 3-2 3-2 4 5 2 11 2 11-3 10 5 15 9 16" style="-webkit-transform-origin: 130px 106px; transform-origin: 130px 106px"/>
+                <path class="octo-body" d="M115 115s4 2 5 0l14-14c3-2 6-3 8-3-8-11-15-24 2-41 5-5 10-7 16-7 1-2 3-7 12-11 0 0 5 3 7 16 4 2 8 5 12 9s7 8 9 12c14 3 17 7 17 7-4 8-9 11-11 11 0 6-2 11-7 16-16 16-30 10-41 2 0 3-1 7-5 11l-12 11c-1 1 1 5 1 5z"/>
+                </svg>
+            </a>
+            <h1>🚀 MPMC Queue Documentation</h1>
         <p class="subtitle">High-Performance Lockless Multi-Producer Multi-Consumer Queue</p>
         <div class="performance-highlights">
             <ul>
@@ -205,28 +267,12 @@ cat > docs/index.html << 'EOF'
         </div>
     </div>
 
-    <div class="nav-grid">
-        <div class="nav-card">
-            <h2>📚 Algorithm Documentation</h2>
-            <p>Detailed explanations of the sequence-based ring buffer algorithm, memory layout optimization, multi-consumer speed analysis, and implementation details.</p>
-            <a href="ALGORITHM_DIAGRAMS.html">View Algorithm Diagrams</a>
-        </div>
-
-        <div class="nav-card">
-            <h2>🔬 Implementation Notes</h2>
-            <p>Deep technical dive into memory ordering, cache optimization, safety guarantees, performance engineering decisions, and algorithm comparisons.</p>
-            <a href="IMPLEMENTATION_NOTES.html">View Implementation Details</a>
-        </div>
-
-        <div class="nav-card">
-            <h2>📊 Benchmark Results</h2>
-            <p>Comprehensive performance analysis with interactive Criterion.rs reports showing throughput, latency, and scaling characteristics.</p>
-            <a href="benchmarks/report/index.html">View All Benchmarks</a>
-        </div>
-    </div>
-
     <div class="benchmark-section">
-        <h2>📈 Benchmark Categories</h2>
+        <h2>📈 Performance Analysis</h2>
+        <p style="text-align: center; margin-bottom: 2rem; color: #666; font-size: 1.1rem;">
+            Comprehensive benchmark suite showing throughput, latency, and scaling characteristics across all scenarios.
+            <br><strong><a href="benchmarks/report/index.html" style="color: #667eea; text-decoration: none;">→ View Complete Benchmark Report</a></strong>
+        </p>
         
         <div class="benchmark-grid">
             <div class="benchmark-item">
@@ -267,9 +313,24 @@ cat > docs/index.html << 'EOF'
         </div>
     </div>
 
+    <div class="nav-grid">
+        <div class="nav-card">
+            <h2>📚 Technical Documentation</h2>
+            <p>Complete technical reference covering algorithm design, implementation details, memory optimization, performance engineering, and comparative analysis with established research.</p>
+            <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+                <a href="ALGORITHM_DIAGRAMS.html" style="flex: 1; text-align: center;">Algorithm Diagrams</a>
+                <a href="IMPLEMENTATION_NOTES.html" style="flex: 1; text-align: center;">Implementation Deep Dive</a>
+            </div>
+        </div>
+    </div>
+    </div>
+
     <div class="footer">
-        <p>Generated automatically from Criterion.rs benchmark results</p>
-        <p>⚡ Built for Speed, Designed for Safety, Optimized for Modern Hardware ⚡</p>
+        <div class="footer-brand">MPMC Queue - High-Performance Lockless Data Structure</div>
+        <p>Built with Rust • Benchmarked with Criterion.rs • Optimized for Modern Hardware</p>
+        <p style="font-size: 0.9rem; margin-top: 1rem;">
+            Research-grade implementation combining Michael & Scott, LMAX Disruptor, and modern optimization techniques
+        </p>
     </div>
 </body>
 </html>
@@ -293,7 +354,7 @@ def convert_markdown_to_html(filename):
     result = []
     in_code_block = False
     
-    for line in lines:
+    for i, line in enumerate(lines):
         # Handle code blocks
         if line.strip().startswith('```'):
             if not in_code_block:
@@ -311,6 +372,7 @@ def convert_markdown_to_html(filename):
             continue
         
         # Process markdown outside code blocks
+        original_line = line
         
         # Headers
         if line.startswith('##### '):
@@ -330,9 +392,16 @@ def convert_markdown_to_html(filename):
             # Bold text
             line = re.sub(r'\*\*([^*]+)\*\*', r'<strong>\1</strong>', line)
             
-            # Convert empty lines to line breaks
+            # Handle empty lines
             if line.strip() == '':
-                line = '<br>'
+                # Check surrounding lines for headings
+                prev_is_heading = i > 0 and any(lines[i-1].startswith('#' * j + ' ') for j in range(1, 6))
+                next_is_heading = i < len(lines) - 1 and any(lines[i+1].startswith('#' * j + ' ') for j in range(1, 6))
+                
+                if prev_is_heading or next_is_heading:
+                    continue  # Skip empty lines around headings
+                else:
+                    line = '<br>'
         
         result.append(line)
     
@@ -366,10 +435,38 @@ create_html_doc() {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             line-height: 1.6;
             color: #333;
+            margin: 0;
+            padding: 0;
+            background: 
+                linear-gradient(90deg, rgba(102, 126, 234, 0.08) 0%, transparent 50%, rgba(118, 75, 162, 0.08) 100%),
+                repeating-linear-gradient(
+                    45deg,
+                    transparent,
+                    transparent 30px,
+                    rgba(102, 126, 234, 0.06) 30px,
+                    rgba(102, 126, 234, 0.06) 32px,
+                    transparent 32px,
+                    transparent 60px
+                ),
+                repeating-linear-gradient(
+                    -45deg,
+                    transparent,
+                    transparent 30px,
+                    rgba(118, 75, 162, 0.06) 30px,
+                    rgba(118, 75, 162, 0.06) 32px,
+                    transparent 32px,
+                    transparent 60px
+                ),
+                radial-gradient(circle at 25% 25%, rgba(102, 126, 234, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, rgba(118, 75, 162, 0.03) 0%, transparent 50%),
+                #f8fafc;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        .container {
             max-width: 1000px;
             margin: 0 auto;
             padding: 20px;
-            background: #f8f9fa;
         }
         .header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -385,6 +482,7 @@ create_html_doc() {
             padding: 2rem;
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
         }
         pre {
             background: #f4f4f4;
@@ -413,10 +511,12 @@ create_html_doc() {
             display: inline-block;
             background: #667eea;
             color: white;
-            padding: 0.5rem 1rem;
+            padding: 0.75rem 1.5rem;
             text-decoration: none;
             border-radius: 5px;
-            margin-bottom: 1rem;
+            margin: 2rem 0;
+            font-weight: 500;
+            transition: background 0.2s ease;
         }
         .nav-back:hover {
             background: #5a67d8;
@@ -457,31 +557,73 @@ create_html_doc() {
             padding-left: 1rem;
             color: #666;
         }
+        .footer {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: rgba(255, 255, 255, 0.9);
+            text-align: center;
+            padding: 3rem 2rem 2rem 2rem;
+            margin-top: 3rem;
+            border-top: 3px solid #667eea;
+            position: relative;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #667eea, #764ba2, #667eea, transparent);
+        }
+        .footer p {
+            margin: 0.5rem 0;
+            opacity: 0.8;
+        }
+        .footer .footer-brand {
+            font-size: 1.1rem;
+            font-weight: 500;
+            opacity: 1;
+            margin-bottom: 1rem;
+        }
     </style>
 </head>
 <body>
-    <div class="header">
-        <a href="https://github.com/abbychau/mpmc-std" class="github-corner" target="_blank" rel="noopener noreferrer">
-            <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 250 250" fill="#151513" style="position: absolute; top: 0; right: 0">
-            <path d="M0 0l115 115h15l12 27 108 108V0z" fill="#000"/>
-            <path class="octo-arm" d="M128 109c-15-9-9-19-9-19 3-7 2-11 2-11-1-7 3-2 3-2 4 5 2 11 2 11-3 10 5 15 9 16" style="-webkit-transform-origin: 130px 106px; transform-origin: 130px 106px"/>
-            <path class="octo-body" d="M115 115s4 2 5 0l14-14c3-2 6-3 8-3-8-11-15-24 2-41 5-5 10-7 16-7 1-2 3-7 12-11 0 0 5 3 7 16 4 2 8 5 12 9s7 8 9 12c14 3 17 7 17 7-4 8-9 11-11 11 0 6-2 11-7 16-16 16-30 10-41 2 0 3-1 7-5 11l-12 11c-1 1 1 5 1 5z"/>
-            </svg>
-        </a>
-        <h1>$title</h1>
-        <p>$subtitle</p>
-    </div>
-    
-    <a href="index.html" class="nav-back">← Back to Documentation Index</a>
-    
-    <div class="content">
+    <div class="container">
+        <div class="header">
+            <a href="https://github.com/abbychau/mpmc-std" class="github-corner" target="_blank" rel="noopener noreferrer">
+                <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 250 250" fill="#151513" style="position: absolute; top: 0; right: 0">
+                <path d="M0 0l115 115h15l12 27 108 108V0z" fill="#000"/>
+                <path class="octo-arm" d="M128 109c-15-9-9-19-9-19 3-7 2-11 2-11-1-7 3-2 3-2 4 5 2 11 2 11-3 10 5 15 9 16" style="-webkit-transform-origin: 130px 106px; transform-origin: 130px 106px"/>
+                <path class="octo-body" d="M115 115s4 2 5 0l14-14c3-2 6-3 8-3-8-11-15-24 2-41 5-5 10-7 16-7 1-2 3-7 12-11 0 0 5 3 7 16 4 2 8 5 12 9s7 8 9 12c14 3 17 7 17 7-4 8-9 11-11 11 0 6-2 11-7 16-16 16-30 10-41 2 0 3-1 7-5 11l-12 11c-1 1 1 5 1 5z"/>
+                </svg>
+            </a>
+            <h1>$title</h1>
+            <p>$subtitle</p>
+        </div>
+        
+        <div class="content">
 EOF
 
     # Convert and append markdown content
     python3 /tmp/md_to_html.py "$md_file" >> "$html_file"
     
-    # Close HTML
+    # Close content div and add navigation button
     cat >> "$html_file" << 'EOF'
+        </div>
+        
+        <div style="text-align: center; margin-bottom: 2rem;">
+            <a href="index.html" class="nav-back">← Back to Documentation Index</a>
+        </div>
+    </div>
+
+    <div class="footer">
+        <div class="footer-brand">MPMC Queue - High-Performance Lockless Data Structure</div>
+        <p>Built with Rust • Benchmarked with Criterion.rs • Optimized for Modern Hardware</p>
+        <p style="font-size: 0.9rem; margin-top: 1rem;">
+            Research-grade implementation combining Michael & Scott, LMAX Disruptor, and modern optimization techniques
+        </p>
     </div>
 </body>
 </html>
