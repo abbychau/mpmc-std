@@ -21,15 +21,54 @@
             border-radius: 10px;
             margin-bottom: 2rem;
             text-align: center;
+            position: relative;
         }
         .header h1 {
-            margin: 0;
+            margin: 0 0 0.5rem 0;
             font-size: 2.5rem;
             font-weight: 300;
         }
-        .header p {
-            margin: 0.5rem 0 0 0;
+        .header .subtitle {
+            margin: 0 0 1rem 0;
             opacity: 0.9;
+            font-size: 1.1rem;
+        }
+        .header .performance-highlights {
+            margin-top: 1rem;
+            font-size: 0.95rem;
+            opacity: 0.95;
+            line-height: 1.4;
+        }
+        .header .performance-highlights ul {
+            list-style: none;
+            padding: 0;
+            margin: 0.5rem 0 0 0;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1.5rem;
+        }
+        .header .performance-highlights li {
+            margin: 0;
+        }
+        .github-corner {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 80px;
+            height: 80px;
+            overflow: hidden;
+        }
+        .github-corner svg {
+            fill: rgba(255, 255, 255, 0.8);
+            color: #667eea;
+            position: absolute;
+            top: 0;
+            border: 0;
+            right: 0;
+        }
+        .github-corner:hover svg {
+            fill: rgba(255, 255, 255, 1);
         }
         .nav-grid {
             display: grid;
@@ -111,38 +150,41 @@
             border-top: 1px solid #eee;
             margin-top: 2rem;
         }
-        .perf-highlight {
-            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
-            color: white;
-            padding: 1rem;
-            border-radius: 5px;
-            margin: 1rem 0;
-        }
     </style>
 </head>
 <body>
     <div class="header">
+        <a href="https://github.com/yourusername/mpmc-std" class="github-corner" target="_blank" rel="noopener noreferrer">
+            <svg width="80" height="80" viewBox="0 0 250 250">
+                <path d="m0,0 0,250 250,0 0,-135.4c-15.1,23.5-36.9,33.7-64.5,33.7-84.5,0-110.7-68.5-110.7-107.3,0,-21.7,5.1-37.8,15.3-52.1l0,-81.9"/>
+                <path d="m128.3,109.0 c113.8,99.7 119.0,89.6 119.0,89.6 0,0 15.9,1.4 67.3,-9.2 15.9,-3.7 33.8,-15.7 54.2,-35.2"/>
+                <path d="m115,115 c-1.4,23.5-12.9,37.3-30.4,37.3-84.9,0-110.7-68.2-110.7-106.7,0,-36.2,16.4-54.3,54.4-54.3z" fill="currentColor"/>
+            </svg>
+        </a>
         <h1>🚀 MPMC Queue Documentation</h1>
-        <p>High-Performance Lockless Multi-Producer Multi-Consumer Queue</p>
+        <p class="subtitle">High-Performance Lockless Multi-Producer Multi-Consumer Queue</p>
+        <div class="performance-highlights">
+            <div>⚡ Performance Highlights:</div>
+            <ul>
+                <li><strong>8.9ns</strong> latency</li>
+                <li><strong>1.8B ops/sec</strong> throughput</li>
+                <li><strong>Linear scaling</strong> to 8 threads</li>
+                <li><strong>Wait-free</strong> algorithm</li>
+            </ul>
+        </div>
     </div>
 
     <div class="nav-grid">
         <div class="nav-card">
             <h2>📚 Algorithm Documentation</h2>
-            <p>Detailed explanations of the sequence-based ring buffer algorithm, memory layout optimization, and implementation details.</p>
+            <p>Detailed explanations of the sequence-based ring buffer algorithm, memory layout optimization, multi-consumer speed analysis, and implementation details.</p>
             <a href="ALGORITHM_DIAGRAMS.html">View Algorithm Diagrams</a>
         </div>
 
         <div class="nav-card">
             <h2>🔬 Implementation Notes</h2>
-            <p>Deep technical dive into memory ordering, cache optimization, safety guarantees, and performance engineering decisions.</p>
+            <p>Deep technical dive into memory ordering, cache optimization, safety guarantees, performance engineering decisions, and algorithm comparisons.</p>
             <a href="IMPLEMENTATION_NOTES.html">View Implementation Details</a>
-        </div>
-
-        <div class="nav-card">
-            <h2>📖 README</h2>
-            <p>Complete project overview with quick start guide, usage examples, and architecture explanations.</p>
-            <a href="../README.md">View README</a>
         </div>
 
         <div class="nav-card">
@@ -150,16 +192,6 @@
             <p>Comprehensive performance analysis with interactive Criterion.rs reports showing throughput, latency, and scaling characteristics.</p>
             <a href="benchmarks/report/index.html">View All Benchmarks</a>
         </div>
-    </div>
-
-    <div class="perf-highlight">
-        <h3>⚡ Performance Highlights</h3>
-        <ul>
-            <li><strong>8.9ns</strong> average latency per operation</li>
-            <li><strong>~1.8 billion ops/sec</strong> single-threaded throughput</li>
-            <li><strong>Linear scaling</strong> up to 8 threads</li>
-            <li><strong>Wait-free</strong> lockless algorithm</li>
-        </ul>
     </div>
 
     <div class="benchmark-section">
