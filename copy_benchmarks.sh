@@ -196,7 +196,6 @@ cat > docs/index.html << 'EOF'
         <h1>🚀 MPMC Queue Documentation</h1>
         <p class="subtitle">High-Performance Lockless Multi-Producer Multi-Consumer Queue</p>
         <div class="performance-highlights">
-            <div>⚡ Performance Highlights:</div>
             <ul>
                 <li><strong>8.9ns</strong> latency</li>
                 <li><strong>1.8B ops/sec</strong> throughput</li>
@@ -443,6 +442,9 @@ create_html_doc() {
         }
         h1, h2, h3, h4, h5, h6 {
             color: #667eea;
+        }
+        .header h1 {
+            color: white;
         }
         h1 { font-size: 2rem; margin-top: 2rem; }
         h2 { font-size: 1.5rem; margin-top: 1.5rem; border-bottom: 2px solid #eee; padding-bottom: 0.5rem; }
