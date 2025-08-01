@@ -186,11 +186,11 @@ cat > docs/index.html << 'EOF'
 </head>
 <body>
     <div class="header">
-        <a href="https://github.com/yourusername/mpmc-std" class="github-corner" target="_blank" rel="noopener noreferrer">
-            <svg width="80" height="80" viewBox="0 0 250 250">
-                <path d="m0,0 0,250 250,0 0,-135.4c-15.1,23.5-36.9,33.7-64.5,33.7-84.5,0-110.7-68.5-110.7-107.3,0,-21.7,5.1-37.8,15.3-52.1l0,-81.9"/>
-                <path d="m128.3,109.0 c113.8,99.7 119.0,89.6 119.0,89.6 0,0 15.9,1.4 67.3,-9.2 15.9,-3.7 33.8,-15.7 54.2,-35.2"/>
-                <path d="m115,115 c-1.4,23.5-12.9,37.3-30.4,37.3-84.9,0-110.7-68.2-110.7-106.7,0,-36.2,16.4-54.3,54.4-54.3z" fill="currentColor"/>
+        <a href="https://github.com/abbychau/mpmc-std" class="github-corner" target="_blank" rel="noopener noreferrer">
+            <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 250 250" fill="#151513" style="position: absolute; top: 0; right: 0">
+            <path d="M0 0l115 115h15l12 27 108 108V0z" fill="#fff"/>
+            <path class="octo-arm" d="M128 109c-15-9-9-19-9-19 3-7 2-11 2-11-1-7 3-2 3-2 4 5 2 11 2 11-3 10 5 15 9 16" style="-webkit-transform-origin: 130px 106px; transform-origin: 130px 106px"/>
+            <path class="octo-body" d="M115 115s4 2 5 0l14-14c3-2 6-3 8-3-8-11-15-24 2-41 5-5 10-7 16-7 1-2 3-7 12-11 0 0 5 3 7 16 4 2 8 5 12 9s7 8 9 12c14 3 17 7 17 7-4 8-9 11-11 11 0 6-2 11-7 16-16 16-30 10-41 2 0 3-1 7-5 11l-12 11c-1 1 1 5 1 5z"/>
             </svg>
         </a>
         <h1>🚀 MPMC Queue Documentation</h1>
@@ -459,11 +459,11 @@ create_html_doc() {
 </head>
 <body>
     <div class="header">
-        <a href="https://github.com/yourusername/mpmc-std" class="github-corner" target="_blank" rel="noopener noreferrer">
-            <svg width="80" height="80" viewBox="0 0 250 250">
-                <path d="m0,0 0,250 250,0 0,-135.4c-15.1,23.5-36.9,33.7-64.5,33.7-84.5,0-110.7-68.5-110.7-107.3,0,-21.7,5.1-37.8,15.3-52.1l0,-81.9"/>
-                <path d="m128.3,109.0 c113.8,99.7 119.0,89.6 119.0,89.6 0,0 15.9,1.4 67.3,-9.2 15.9,-3.7 33.8,-15.7 54.2,-35.2"/>
-                <path d="m115,115 c-1.4,23.5-12.9,37.3-30.4,37.3-84.9,0-110.7-68.2-110.7-106.7,0,-36.2,16.4-54.3,54.4-54.3z" fill="currentColor"/>
+        <a href="https://github.com/abbychau/mpmc-std" class="github-corner" target="_blank" rel="noopener noreferrer">
+            <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 250 250" fill="#151513" style="position: absolute; top: 0; right: 0">
+            <path d="M0 0l115 115h15l12 27 108 108V0z" fill="#fff"/>
+            <path class="octo-arm" d="M128 109c-15-9-9-19-9-19 3-7 2-11 2-11-1-7 3-2 3-2 4 5 2 11 2 11-3 10 5 15 9 16" style="-webkit-transform-origin: 130px 106px; transform-origin: 130px 106px"/>
+            <path class="octo-body" d="M115 115s4 2 5 0l14-14c3-2 6-3 8-3-8-11-15-24 2-41 5-5 10-7 16-7 1-2 3-7 12-11 0 0 5 3 7 16 4 2 8 5 12 9s7 8 9 12c14 3 17 7 17 7-4 8-9 11-11 11 0 6-2 11-7 16-16 16-30 10-41 2 0 3-1 7-5 11l-12 11c-1 1 1 5 1 5z"/>
             </svg>
         </a>
         <h1>$title</h1>
