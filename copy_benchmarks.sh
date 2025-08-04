@@ -38,34 +38,30 @@ cat > docs/index.html << 'EOF'
     <title>MPMC Queue Documentation</title>
     <style>
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', sans-serif;
             line-height: 1.6;
-            color: #333;
+            color: #1a202c;
             margin: 0;
             padding: 0;
             background: 
-                linear-gradient(90deg, rgba(102, 126, 234, 0.08) 0%, transparent 50%, rgba(118, 75, 162, 0.08) 100%),
+                linear-gradient(135deg, rgba(99, 102, 241, 0.03) 0%, rgba(139, 92, 246, 0.03) 100%),
                 repeating-linear-gradient(
-                    45deg,
+                    0deg,
                     transparent,
-                    transparent 30px,
-                    rgba(102, 126, 234, 0.06) 30px,
-                    rgba(102, 126, 234, 0.06) 32px,
-                    transparent 32px,
-                    transparent 60px
+                    transparent 50px,
+                    rgba(99, 102, 241, 0.02) 50px,
+                    rgba(99, 102, 241, 0.02) 51px
                 ),
                 repeating-linear-gradient(
-                    -45deg,
+                    90deg,
                     transparent,
-                    transparent 30px,
-                    rgba(118, 75, 162, 0.06) 30px,
-                    rgba(118, 75, 162, 0.06) 32px,
-                    transparent 32px,
-                    transparent 60px
+                    transparent 50px,
+                    rgba(139, 92, 246, 0.02) 50px,
+                    rgba(139, 92, 246, 0.02) 51px
                 ),
-                radial-gradient(circle at 25% 25%, rgba(102, 126, 234, 0.03) 0%, transparent 50%),
-                radial-gradient(circle at 75% 75%, rgba(118, 75, 162, 0.03) 0%, transparent 50%),
-                #f8fafc;
+                radial-gradient(circle at 20% 80%, rgba(99, 102, 241, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.05) 0%, transparent 50%),
+                #fafbfc;
             min-height: 100vh;
             overflow-x: hidden;
         }
@@ -75,13 +71,17 @@ cat > docs/index.html << 'EOF'
             padding: 20px;
         }
         .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%);
             color: white;
-            padding: 2rem;
-            border-radius: 10px;
-            margin-bottom: 2rem;
+            padding: 3rem 2rem;
+            border-radius: 16px;
+            margin-bottom: 3rem;
             text-align: center;
             position: relative;
+            box-shadow: 
+                0 20px 25px -5px rgba(99, 102, 241, 0.1),
+                0 10px 10px -5px rgba(99, 102, 241, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
         .header h1 {
             margin: 0 0 0.5rem 0;
@@ -137,54 +137,100 @@ cat > docs/index.html << 'EOF'
             margin-bottom: 2rem;
         }
         .nav-card {
-            background: white;
-            border-radius: 8px;
-            padding: 1.5rem;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 
+                0 4px 6px -1px rgba(0, 0, 0, 0.1),
+                0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border: 1px solid rgba(99, 102, 241, 0.08);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        .nav-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #6366f1, #8b5cf6, #a855f7);
+            opacity: 0;
+            transition: opacity 0.3s ease;
         }
         .nav-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            transform: translateY(-4px);
+            box-shadow: 
+                0 20px 25px -5px rgba(99, 102, 241, 0.1),
+                0 10px 10px -5px rgba(99, 102, 241, 0.04);
+            border-color: rgba(99, 102, 241, 0.15);
+        }
+        .nav-card:hover::before {
+            opacity: 1;
         }
         .nav-card h2 {
             margin-top: 0;
-            color: #667eea;
-            font-size: 1.3rem;
+            color: #374151;
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
         }
         .nav-card p {
-            color: #666;
-            margin-bottom: 1rem;
+            color: #6b7280;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
         }
         .nav-card a {
             display: inline-block;
-            background: #667eea;
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
             color: white;
-            padding: 0.5rem 1rem;
+            padding: 0.75rem 1.5rem;
             text-decoration: none;
-            border-radius: 5px;
-            transition: background 0.2s ease;
+            border-radius: 12px;
+            transition: all 0.2s ease;
+            font-weight: 500;
+            box-shadow: 0 2px 4px rgba(99, 102, 241, 0.2);
         }
         .nav-card a:hover {
-            background: #5a67d8;
+            background: linear-gradient(135deg, #5855eb 0%, #7c3aed 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(99, 102, 241, 0.3);
         }
         .benchmark-section {
-            background: white;
-            border-radius: 8px;
-            padding: 2rem;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            margin-bottom: 2rem;
+            background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+            border-radius: 20px;
+            padding: 3rem;
+            box-shadow: 
+                0 10px 15px -3px rgba(0, 0, 0, 0.1),
+                0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(99, 102, 241, 0.06);
+            margin-bottom: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+        .benchmark-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #6366f1, #8b5cf6, #a855f7, #ec4899);
         }
         .benchmark-section h2 {
-            color: #667eea;
-            border-bottom: 2px solid #eee;
-            padding-bottom: 0.5rem;
+            color: #374151;
+            border-bottom: 2px solid #e5e7eb;
+            padding-bottom: 1rem;
+            margin-bottom: 2rem;
+            font-weight: 600;
+            font-size: 1.75rem;
         }
         .benchmark-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 1rem;
-            margin-top: 1rem;
+            gap: 1.5rem;
+            margin-top: 2rem;
         }
         @media (max-width: 768px) {
             .benchmark-grid {
@@ -197,29 +243,53 @@ cat > docs/index.html << 'EOF'
             }
         }
         .benchmark-item {
-            background: #f8f9fa;
-            padding: 1rem;
-            border-radius: 5px;
-            border-left: 4px solid #667eea;
+            background: linear-gradient(145deg, #ffffff 0%, #f9fafb 100%);
+            padding: 1.75rem;
+            border-radius: 16px;
+            border: 1px solid rgba(99, 102, 241, 0.15);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        .benchmark-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 
+                0 10px 15px -3px rgba(99, 102, 241, 0.1),
+                0 4px 6px -2px rgba(99, 102, 241, 0.05);
         }
         .benchmark-item h4 {
             margin-top: 0;
-            color: #333;
+            margin-bottom: 1rem;
+            color: #374151;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        .benchmark-item p {
+            color: #6b7280;
+            margin-bottom: 1.25rem;
+            line-height: 1.5;
         }
         .benchmark-item a {
-            color: #667eea;
+            color: #6366f1;
             text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            background: rgba(99, 102, 241, 0.05);
+            transition: all 0.2s ease;
+            display: inline-block;
         }
         .benchmark-item a:hover {
-            text-decoration: underline;
+            background: rgba(99, 102, 241, 0.1);
+            transform: translateX(2px);
         }
         .footer {
-            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            background: linear-gradient(135deg, #1f2937 0%, #374151 100%);
             color: rgba(255, 255, 255, 0.9);
             text-align: center;
-            padding: 3rem 2rem 2rem 2rem;
-            margin-top: 3rem;
-            border-top: 3px solid #667eea;
+            padding: 4rem 2rem 3rem 2rem;
+            margin-top: 4rem;
+            border-top: 4px solid transparent;
+            border-image: linear-gradient(90deg, #6366f1, #8b5cf6, #a855f7, #ec4899) 1;
             position: relative;
             width: 100%;
             box-sizing: border-box;
@@ -230,8 +300,8 @@ cat > docs/index.html << 'EOF'
             top: 0;
             left: 0;
             right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, #667eea, #764ba2, #667eea, transparent);
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #6366f1, #8b5cf6, #a855f7, #ec4899, transparent);
         }
         .footer p {
             margin: 0.5rem 0;
@@ -242,6 +312,47 @@ cat > docs/index.html << 'EOF'
             font-weight: 500;
             opacity: 1;
             margin-bottom: 1rem;
+        }
+        
+        /* Code styling */
+        code {
+            background: rgba(99, 102, 241, 0.08);
+            color: #6366f1;
+            padding: 0.2em 0.4em;
+            border-radius: 6px;
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+            font-size: 0.9em;
+            font-weight: 500;
+            border: 1px solid rgba(99, 102, 241, 0.12);
+        }
+        
+        pre {
+            background: linear-gradient(145deg, #f8fafc 0%, #f1f5f9 100%);
+            border: 1px solid rgba(99, 102, 241, 0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            overflow-x: auto;
+            box-shadow: 
+                0 4px 6px -1px rgba(0, 0, 0, 0.05),
+                0 2px 4px -1px rgba(0, 0, 0, 0.03);
+        }
+        
+        pre code {
+            background: none;
+            color: #374151;
+            padding: 0;
+            border-radius: 0;
+            border: none;
+            font-size: 0.875rem;
+            line-height: 1.6;
+            font-weight: 400;
+        }
+        
+        pre:hover {
+            box-shadow: 
+                0 10px 15px -3px rgba(99, 102, 241, 0.08),
+                0 4px 6px -2px rgba(99, 102, 241, 0.04);
         }
     </style>
 </head>
@@ -415,14 +526,14 @@ if __name__ == '__main__':
     print(convert_markdown_to_html(sys.argv[1]))
 EOF
 
-# Function to create HTML file with proper structure
+# Function to create HTML file with proper structure and professional styling
 create_html_doc() {
     local md_file="$1"
     local html_file="$2"
     local title="$3"
     local subtitle="$4"
     
-    # Create HTML header
+    # Create HTML header with professional styling
     cat > "$html_file" << EOF
 <!DOCTYPE html>
 <html lang="en">
@@ -432,34 +543,30 @@ create_html_doc() {
     <title>$title - MPMC Queue</title>
     <style>
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', sans-serif;
             line-height: 1.6;
-            color: #333;
+            color: #1a202c;
             margin: 0;
             padding: 0;
             background: 
-                linear-gradient(90deg, rgba(102, 126, 234, 0.08) 0%, transparent 50%, rgba(118, 75, 162, 0.08) 100%),
+                linear-gradient(135deg, rgba(99, 102, 241, 0.03) 0%, rgba(139, 92, 246, 0.03) 100%),
                 repeating-linear-gradient(
-                    45deg,
+                    0deg,
                     transparent,
-                    transparent 30px,
-                    rgba(102, 126, 234, 0.06) 30px,
-                    rgba(102, 126, 234, 0.06) 32px,
-                    transparent 32px,
-                    transparent 60px
+                    transparent 50px,
+                    rgba(99, 102, 241, 0.02) 50px,
+                    rgba(99, 102, 241, 0.02) 51px
                 ),
                 repeating-linear-gradient(
-                    -45deg,
+                    90deg,
                     transparent,
-                    transparent 30px,
-                    rgba(118, 75, 162, 0.06) 30px,
-                    rgba(118, 75, 162, 0.06) 32px,
-                    transparent 32px,
-                    transparent 60px
+                    transparent 50px,
+                    rgba(139, 92, 246, 0.02) 50px,
+                    rgba(139, 92, 246, 0.02) 51px
                 ),
-                radial-gradient(circle at 25% 25%, rgba(102, 126, 234, 0.03) 0%, transparent 50%),
-                radial-gradient(circle at 75% 75%, rgba(118, 75, 162, 0.03) 0%, transparent 50%),
-                #f8fafc;
+                radial-gradient(circle at 20% 80%, rgba(99, 102, 241, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.05) 0%, transparent 50%),
+                #fafbfc;
             min-height: 100vh;
             overflow-x: hidden;
         }
@@ -469,57 +576,55 @@ create_html_doc() {
             padding: 20px;
         }
         .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%);
             color: white;
-            padding: 2rem;
-            border-radius: 10px;
-            margin-bottom: 2rem;
+            padding: 3rem 2rem;
+            border-radius: 16px;
+            margin-bottom: 3rem;
             text-align: center;
             position: relative;
+            box-shadow: 
+                0 20px 25px -5px rgba(99, 102, 241, 0.1),
+                0 10px 10px -5px rgba(99, 102, 241, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
         .content {
-            background: white;
-            padding: 2rem;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            margin-bottom: 2rem;
+            background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+            padding: 3rem;
+            border-radius: 20px;
+            box-shadow: 
+                0 10px 15px -3px rgba(0, 0, 0, 0.1),
+                0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(99, 102, 241, 0.06);
+            margin-bottom: 3rem;
+            position: relative;
+            overflow: hidden;
         }
-        pre {
-            background: #f4f4f4;
-            padding: 1rem;
-            border-radius: 5px;
-            overflow-x: auto;
-            border-left: 4px solid #667eea;
-            white-space: pre;
-            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-        }
-        code {
-            background: #f4f4f4;
-            padding: 0.2rem 0.4rem;
-            border-radius: 3px;
-            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-            display: block;
-            line-height: 1em;
-        }
-        pre code {
-            background: none;
-            padding: 0;
-            display: block;
-            line-height: 1em;
+        .content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #6366f1, #8b5cf6, #a855f7, #ec4899);
         }
         .nav-back {
             display: inline-block;
-            background: #667eea;
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
             color: white;
             padding: 0.75rem 1.5rem;
             text-decoration: none;
-            border-radius: 5px;
+            border-radius: 12px;
             margin: 2rem 0;
             font-weight: 500;
-            transition: background 0.2s ease;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 4px rgba(99, 102, 241, 0.2);
         }
         .nav-back:hover {
-            background: #5a67d8;
+            background: linear-gradient(135deg, #5855eb 0%, #7c3aed 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(99, 102, 241, 0.3);
         }
         .github-corner {
             position: absolute;
@@ -541,29 +646,30 @@ create_html_doc() {
             fill: rgba(255, 255, 255, 1);
         }
         h1, h2, h3, h4, h5, h6 {
-            color: #667eea;
+            color: #374151;
         }
         .header h1 {
             color: white;
         }
         h1 { font-size: 2rem; margin-top: 2rem; }
-        h2 { font-size: 1.5rem; margin-top: 1.5rem; border-bottom: 2px solid #eee; padding-bottom: 0.5rem; }
+        h2 { font-size: 1.5rem; margin-top: 1.5rem; border-bottom: 2px solid #e5e7eb; padding-bottom: 0.5rem; }
         h3 { font-size: 1.3rem; margin-top: 1.3rem; }
         h4 { font-size: 1.1rem; margin-top: 1.1rem; }
         ul, ol { padding-left: 2rem; }
         blockquote {
-            border-left: 4px solid #667eea;
+            border-left: 4px solid #6366f1;
             margin: 1rem 0;
             padding-left: 1rem;
             color: #666;
         }
         .footer {
-            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            background: linear-gradient(135deg, #1f2937 0%, #374151 100%);
             color: rgba(255, 255, 255, 0.9);
             text-align: center;
-            padding: 3rem 2rem 2rem 2rem;
-            margin-top: 3rem;
-            border-top: 3px solid #667eea;
+            padding: 4rem 2rem 3rem 2rem;
+            margin-top: 4rem;
+            border-top: 4px solid transparent;
+            border-image: linear-gradient(90deg, #6366f1, #8b5cf6, #a855f7, #ec4899) 1;
             position: relative;
             width: 100%;
             box-sizing: border-box;
@@ -574,8 +680,8 @@ create_html_doc() {
             top: 0;
             left: 0;
             right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, #667eea, #764ba2, #667eea, transparent);
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #6366f1, #8b5cf6, #a855f7, #ec4899, transparent);
         }
         .footer p {
             margin: 0.5rem 0;
@@ -586,6 +692,47 @@ create_html_doc() {
             font-weight: 500;
             opacity: 1;
             margin-bottom: 1rem;
+        }
+        
+        /* Code styling */
+        code {
+            background: rgba(99, 102, 241, 0.08);
+            color: #6366f1;
+            padding: 0.2em 0.4em;
+            border-radius: 6px;
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+            font-size: 0.9em;
+            font-weight: 500;
+            border: 1px solid rgba(99, 102, 241, 0.12);
+        }
+        
+        pre {
+            background: linear-gradient(145deg, #f8fafc 0%, #f1f5f9 100%);
+            border: 1px solid rgba(99, 102, 241, 0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            overflow-x: auto;
+            box-shadow: 
+                0 4px 6px -1px rgba(0, 0, 0, 0.05),
+                0 2px 4px -1px rgba(0, 0, 0, 0.03);
+        }
+        
+        pre code {
+            background: none;
+            color: #374151;
+            padding: 0;
+            border-radius: 0;
+            border: none;
+            font-size: 0.875rem;
+            line-height: 1.6;
+            font-weight: 400;
+        }
+        
+        pre:hover {
+            box-shadow: 
+                0 10px 15px -3px rgba(99, 102, 241, 0.08),
+                0 4px 6px -2px rgba(99, 102, 241, 0.04);
         }
     </style>
 </head>

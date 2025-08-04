@@ -6,34 +6,30 @@
     <title>🎨 Algorithm Diagrams - MPMC Queue</title>
     <style>
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', sans-serif;
             line-height: 1.6;
-            color: #333;
+            color: #1a202c;
             margin: 0;
             padding: 0;
             background: 
-                linear-gradient(90deg, rgba(102, 126, 234, 0.08) 0%, transparent 50%, rgba(118, 75, 162, 0.08) 100%),
+                linear-gradient(135deg, rgba(99, 102, 241, 0.03) 0%, rgba(139, 92, 246, 0.03) 100%),
                 repeating-linear-gradient(
-                    45deg,
+                    0deg,
                     transparent,
-                    transparent 30px,
-                    rgba(102, 126, 234, 0.06) 30px,
-                    rgba(102, 126, 234, 0.06) 32px,
-                    transparent 32px,
-                    transparent 60px
+                    transparent 50px,
+                    rgba(99, 102, 241, 0.02) 50px,
+                    rgba(99, 102, 241, 0.02) 51px
                 ),
                 repeating-linear-gradient(
-                    -45deg,
+                    90deg,
                     transparent,
-                    transparent 30px,
-                    rgba(118, 75, 162, 0.06) 30px,
-                    rgba(118, 75, 162, 0.06) 32px,
-                    transparent 32px,
-                    transparent 60px
+                    transparent 50px,
+                    rgba(139, 92, 246, 0.02) 50px,
+                    rgba(139, 92, 246, 0.02) 51px
                 ),
-                radial-gradient(circle at 25% 25%, rgba(102, 126, 234, 0.03) 0%, transparent 50%),
-                radial-gradient(circle at 75% 75%, rgba(118, 75, 162, 0.03) 0%, transparent 50%),
-                #f8fafc;
+                radial-gradient(circle at 20% 80%, rgba(99, 102, 241, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.05) 0%, transparent 50%),
+                #fafbfc;
             min-height: 100vh;
             overflow-x: hidden;
         }
@@ -43,57 +39,55 @@
             padding: 20px;
         }
         .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%);
             color: white;
-            padding: 2rem;
-            border-radius: 10px;
-            margin-bottom: 2rem;
+            padding: 3rem 2rem;
+            border-radius: 16px;
+            margin-bottom: 3rem;
             text-align: center;
             position: relative;
+            box-shadow: 
+                0 20px 25px -5px rgba(99, 102, 241, 0.1),
+                0 10px 10px -5px rgba(99, 102, 241, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
         .content {
-            background: white;
-            padding: 2rem;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            margin-bottom: 2rem;
+            background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+            padding: 3rem;
+            border-radius: 20px;
+            box-shadow: 
+                0 10px 15px -3px rgba(0, 0, 0, 0.1),
+                0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(99, 102, 241, 0.06);
+            margin-bottom: 3rem;
+            position: relative;
+            overflow: hidden;
         }
-        pre {
-            background: #f4f4f4;
-            padding: 1rem;
-            border-radius: 5px;
-            overflow-x: auto;
-            border-left: 4px solid #667eea;
-            white-space: pre;
-            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-        }
-        code {
-            background: #f4f4f4;
-            padding: 0.2rem 0.4rem;
-            border-radius: 3px;
-            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-            display: block;
-            line-height: 1em;
-        }
-        pre code {
-            background: none;
-            padding: 0;
-            display: block;
-            line-height: 1em;
+        .content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #6366f1, #8b5cf6, #a855f7, #ec4899);
         }
         .nav-back {
             display: inline-block;
-            background: #667eea;
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
             color: white;
             padding: 0.75rem 1.5rem;
             text-decoration: none;
-            border-radius: 5px;
+            border-radius: 12px;
             margin: 2rem 0;
             font-weight: 500;
-            transition: background 0.2s ease;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 4px rgba(99, 102, 241, 0.2);
         }
         .nav-back:hover {
-            background: #5a67d8;
+            background: linear-gradient(135deg, #5855eb 0%, #7c3aed 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(99, 102, 241, 0.3);
         }
         .github-corner {
             position: absolute;
@@ -115,29 +109,30 @@
             fill: rgba(255, 255, 255, 1);
         }
         h1, h2, h3, h4, h5, h6 {
-            color: #667eea;
+            color: #374151;
         }
         .header h1 {
             color: white;
         }
         h1 { font-size: 2rem; margin-top: 2rem; }
-        h2 { font-size: 1.5rem; margin-top: 1.5rem; border-bottom: 2px solid #eee; padding-bottom: 0.5rem; }
+        h2 { font-size: 1.5rem; margin-top: 1.5rem; border-bottom: 2px solid #e5e7eb; padding-bottom: 0.5rem; }
         h3 { font-size: 1.3rem; margin-top: 1.3rem; }
         h4 { font-size: 1.1rem; margin-top: 1.1rem; }
         ul, ol { padding-left: 2rem; }
         blockquote {
-            border-left: 4px solid #667eea;
+            border-left: 4px solid #6366f1;
             margin: 1rem 0;
             padding-left: 1rem;
             color: #666;
         }
         .footer {
-            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            background: linear-gradient(135deg, #1f2937 0%, #374151 100%);
             color: rgba(255, 255, 255, 0.9);
             text-align: center;
-            padding: 3rem 2rem 2rem 2rem;
-            margin-top: 3rem;
-            border-top: 3px solid #667eea;
+            padding: 4rem 2rem 3rem 2rem;
+            margin-top: 4rem;
+            border-top: 4px solid transparent;
+            border-image: linear-gradient(90deg, #6366f1, #8b5cf6, #a855f7, #ec4899) 1;
             position: relative;
             width: 100%;
             box-sizing: border-box;
@@ -148,8 +143,8 @@
             top: 0;
             left: 0;
             right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, #667eea, #764ba2, #667eea, transparent);
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #6366f1, #8b5cf6, #a855f7, #ec4899, transparent);
         }
         .footer p {
             margin: 0.5rem 0;
@@ -160,6 +155,47 @@
             font-weight: 500;
             opacity: 1;
             margin-bottom: 1rem;
+        }
+        
+        /* Code styling */
+        code {
+            background: rgba(99, 102, 241, 0.08);
+            color: #6366f1;
+            padding: 0.2em 0.4em;
+            border-radius: 6px;
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+            font-size: 0.9em;
+            font-weight: 500;
+            border: 1px solid rgba(99, 102, 241, 0.12);
+        }
+        
+        pre {
+            background: linear-gradient(145deg, #f8fafc 0%, #f1f5f9 100%);
+            border: 1px solid rgba(99, 102, 241, 0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            overflow-x: auto;
+            box-shadow: 
+                0 4px 6px -1px rgba(0, 0, 0, 0.05),
+                0 2px 4px -1px rgba(0, 0, 0, 0.03);
+        }
+        
+        pre code {
+            background: none;
+            color: #374151;
+            padding: 0;
+            border-radius: 0;
+            border: none;
+            font-size: 0.875rem;
+            line-height: 1.6;
+            font-weight: 400;
+        }
+        
+        pre:hover {
+            box-shadow: 
+                0 10px 15px -3px rgba(99, 102, 241, 0.08),
+                0 4px 6px -2px rgba(99, 102, 241, 0.04);
         }
     </style>
 </head>
@@ -178,883 +214,88 @@
         </div>
         
         <div class="content">
-<h1>🎨 MPMC Queue Algorithm Diagrams</h1>
-This document provides detailed visual explanations of the lockless MPMC queue algorithm and data structures.
-<h2>📚 Algorithm Heritage and Comparisons</h2>
-Our MPMC queue implementation builds upon and synthesizes several foundational research algorithms, creating a production-ready lockless data structure optimized for modern hardware.
-<h3>🔬 Theoretical Foundations</h3>
-<h4>Michael & Scott Non-Blocking Queue (1996)</h4>
-<strong>Core Contribution</strong>: Lock-free linked list with atomic pointer manipulation
-<pre><code>
-Michael &amp; Scott Innovation:
-┌─────────────────────────────────────────────────────────┐
-│ Problem: Traditional queues use coarse-grained locking  │
-│ Solution: Fine-grained atomic operations on pointers    │
-│                                                         │
-│ Original Structure:                                     │
-│ Head ──→ [Node] ──→ [Node] ──→ [Node] ──→ Tail         │
-│          ↑ CAS     ↑ CAS     ↑ CAS                     │
-│                                                         │
-│ Benefits:                                               │
-│ • Wait-free progress guarantees                        │
-│ • No convoy effects from blocking                      │
-│ • ABA problem avoidance through pointer epochs         │
-└─────────────────────────────────────────────────────────┘
-
-Our Adaptation:
-┌─────────────────────────────────────────────────────────┐
-│ Innovation: Replace linked list with fixed ring buffer │
-│ Benefit: Eliminate memory allocation/deallocation      │
-│                                                         │
-│ Our Structure:                                          │
-│ [Slot₀] [Slot₁] [Slot₂] ... [SlotN]                   │
-│    ↑       ↑       ↑         ↑                        │
-│   CAS     CAS     CAS       CAS                        │
-│                                                         │
-│ Improvements:                                           │
-│ • O(1) memory usage vs O(n) dynamic allocation        │
-│ • Better cache locality from contiguous memory        │
-│ • Predictable memory access patterns                   │
-└─────────────────────────────────────────────────────────┘
-</code></pre>
-<h4>LMAX Disruptor Pattern (2011)</h4>
-<strong>Core Contribution</strong>: Sequence-based coordination and cache-line optimization
-<pre><code>
-Disruptor Innovation:
-┌─────────────────────────────────────────────────────────┐
-│ Problem: False sharing destroys multi-core performance │
-│ Solution: Sequence numbers + cache-line separation     │
-│                                                         │
-│ Original Insight:                                       │
-│ Instead of: [occupied: bool, data: T]                  │
-│ Use:        [sequence: u64, data: T]                   │
-│                                                         │
-│ Sequence States:                                        │
-│ • seq = n     → Available for producer                 │
-│ • seq = n+1   → Available for consumer                 │
-│ • seq = n+cap → Available again after full cycle      │
-└─────────────────────────────────────────────────────────┘
-
-Our Implementation:
-┌─────────────────────────────────────────────────────────┐
-│ Direct Adoption: We use sequence numbers identically   │
-│                                                         │
-│ Slot State Machine:                                     │
-│                                                         │
-│ Producer sees:           Consumer sees:                 │
-│ seq == expected          seq == expected + 1           │
-│     ↓                        ↓                         │
-│ [Write Data]             [Read Data]                    │
-│     ↓                        ↓                         │
-│ seq := expected + 1      seq := expected + capacity    │
-│                                                         │
-│ Enhancement: 64-byte cache-line alignment              │
-│ • ProducerPos: Own cache line                          │
-│ • ConsumerPos: Own cache line                          │
-│ • Each Slot: 64-byte aligned when possible            │
-└─────────────────────────────────────────────────────────┘
-</code></pre>
-<h4>1024cores.net Algorithms (Dmitry Vyukov)</h4>
-<strong>Core Contribution</strong>: Wait-free progress bounds and memory ordering optimization
-<pre><code>
-Vyukov&#x27;s Insight:
-┌─────────────────────────────────────────────────────────┐
-│ Problem: Lock-free ≠ Wait-free (can still have delays) │
-│ Solution: Bounded retry loops with progress guarantees │
-│                                                         │
-│ Memory Ordering Hierarchy:                              │
-│ Relaxed &lt; Acquire &lt; Release &lt; AcqRel &lt; SeqCst          │
-│    ↑         ↑        ↑                                │
-│ Cheapest  Moderate  Expensive                          │
-│                                                         │
-│ Principle: Use weakest ordering that maintains safety  │
-└─────────────────────────────────────────────────────────┘
-
-Our Application:
-┌─────────────────────────────────────────────────────────┐
-│ Optimized Memory Ordering Strategy:                     │
-│                                                         │
-│ Position Loads:    Relaxed  (just need current value)  │
-│ Sequence Loads:    Acquire  (see previous writes)      │
-│ Position Updates:  Relaxed  (CAS provides ordering)    │
-│ Sequence Updates:  Release  (make writes visible)      │
-│                                                         │
-│ Result: ~15% performance improvement over SeqCst       │
-│                                                         │
-│ Progress Guarantee:                                     │
-│ • Every operation completes in bounded time            │
-│ • No indefinite retry loops                            │
-│ • Natural backoff through failed CAS operations       │
-└─────────────────────────────────────────────────────────┘
-</code></pre>
-<h3>🔄 Crossbeam-rs Influence</h3>
-<strong>Core Contribution</strong>: Rust-specific safety patterns and epoch-based reclamation
-<pre><code>
-Crossbeam Pattern:
-┌─────────────────────────────────────────────────────────┐
-│ Problem: Rust ownership model vs lockless algorithms   │
-│ Solution: Unsafe code with compile-time safety proofs  │
-│                                                         │
-│ Safety Strategy:                                        │
-│ • Use UnsafeCell for interior mutability              │
-│ • Prove no data races through sequence coordination    │
-│ • Implement Send/Sync manually with safety comments    │
-│                                                         │
-│ Memory Reclamation:                                     │
-│ • Epoch-based: Track reader/writer generations         │
-│ • Hazard Pointers: Protect specific memory addresses   │
-└─────────────────────────────────────────────────────────┘
-
-Our Safety Model:
-┌─────────────────────────────────────────────────────────┐
-│ Fixed-Size Advantage: No dynamic memory management     │
-│                                                         │
-│ Safety Invariants:                                      │
-│ 1. Data written only when seq == expected             │
-│ 2. Data read only when seq == expected + 1            │
-│ 3. No concurrent access to same slot state            │
-│ 4. Sequence coordination prevents all races           │
-│                                                         │
-│ Memory Safety:                                          │
-│ • MaybeUninit&lt;T&gt; for uninitialized storage            │
-│ • Proper Drop implementation for cleanup              │
-│ • No dangling pointers (fixed allocation)             │
-│                                                         │
-│ Result: Memory safety without epoch overhead           │
-└─────────────────────────────────────────────────────────┘
-</code></pre>
-<h3>🆚 Comparative Analysis</h3>
-<h4>vs. Michael & Scott Queue</h4>
-<pre><code>
-Comparison Matrix:
-
-                    Michael &amp; Scott    Our Implementation
-                    ┌─────────────┐   ┌─────────────────┐
-Memory Usage        │ O(n) dynamic│   │ O(capacity)     │
-                    │ allocation  │   │ fixed           │
-                    └─────────────┘   └─────────────────┘
-                           ❌                ✅
-
-Cache Performance   ┌─────────────┐   ┌─────────────────┐
-                    │ Poor        │   │ Excellent       │
-                    │ (scattered) │   │ (contiguous)    │
-                    └─────────────┘   └─────────────────┘
-                           ❌                ✅
-
-Memory Reclamation  ┌─────────────┐   ┌─────────────────┐
-                    │ Complex     │   │ Simple          │
-                    │ (epochs)    │   │ (fixed buffer)  │
-                    └─────────────┘   └─────────────────┘
-                           ❌                ✅
-
-Unbounded Growth    ┌─────────────┐   ┌─────────────────┐
-                    │ Yes         │   │ No              │
-                    │ (unlimited) │   │ (bounded)       │
-                    └─────────────┘   └─────────────────┘
-                           ✅                ❌
-</code></pre>
-<h4>vs. LMAX Disruptor</h4>
-<pre><code>
-Comparison Matrix:
-
-                    LMAX Disruptor     Our Implementation
-                    ┌─────────────┐   ┌─────────────────┐
-Multi-Consumer      │ Complex     │   │ Simple          │
-Support             │ (barriers)  │   │ (direct CAS)    │
-                    └─────────────┘   └─────────────────┘
-                           ❌                ✅
-
-Single/Multi        ┌─────────────┐   ┌─────────────────┐
-Producer Variants   │ Different   │   │ Unified         │
-                    │ classes     │   │ algorithm       │
-                    └─────────────┘   └─────────────────┘
-                           ❌                ✅
-
-Memory Efficiency   ┌─────────────┐   ┌─────────────────┐
-                    │ Padded      │   │ Optimized       │
-                    │ everywhere  │   │ alignment       │
-                    └─────────────┘   └─────────────────┘
-                           ❌                ✅
-
-Batch Processing    ┌─────────────┐   ┌─────────────────┐
-                    │ Optimized   │   │ Item-by-item    │
-                    │ for batches │   │ focused         │
-                    └─────────────┘   └─────────────────┘
-                           ✅                ❌
-</code></pre>
-<h4>vs. Traditional Mutex-Based Queues</h4>
-<pre><code>
-Performance Breakthrough:
-
-Traditional (Mutex):        Our Implementation:
-┌─────────────────────┐    ┌─────────────────────┐
-│ Thread 1: lock()    │    │ Thread 1: CAS loop  │
-│          critical   │    │          success!   │
-│          unlock()   │    │          continue   │
-│                     │    │                     │
-│ Thread 2: lock()    │    │ Thread 2: CAS loop  │
-│          blocked!   │    │          success!   │
-│          wait...    │    │          continue   │
-│                     │    │                     │
-│ Thread 3: lock()    │    │ Thread 3: CAS loop  │
-│          blocked!   │    │          success!   │
-│          wait...    │    │          continue   │
-└─────────────────────┘    └─────────────────────┘
-        ❌ Serialized              ✅ Parallel
-
-Performance Impact:
-• Latency: 8.9ns vs ~100-1000ns (10-100x improvement)
-• Throughput: 1.8B ops/sec vs ~10M ops/sec (180x improvement)
-• Scalability: Linear vs degraded with threads
-• Predictability: No convoy effects or priority inversion
-</code></pre>
-<h3>🎯 Our Algorithmic Innovation</h3>
-<h4>Unique Contributions</h4>
-<pre><code>
-Synthesis and Optimization:
-
-1. **Hybrid Sequence Coordination**
-   ┌─────────────────────────────────────────────────────────┐
-   │ Combine Disruptor sequences + Michael &amp; Scott CAS      │
-   │ Result: Wait-free progress with optimal cache usage    │
-   └─────────────────────────────────────────────────────────┘
-
-2. **Power-of-2 Ring Buffer Optimization**
-   ┌─────────────────────────────────────────────────────────┐
-   │ Replace expensive modulo with bitwise AND               │
-   │ position &amp; (capacity - 1) instead of position % capacity│
-   │ Result: ~20% performance improvement on index calculation│
-   └─────────────────────────────────────────────────────────┘
-
-3. **Rust-Optimized Memory Safety**
-   ┌─────────────────────────────────────────────────────────┐
-   │ UnsafeCell + MaybeUninit + sequence guarantees         │
-   │ No runtime overhead for memory reclamation             │
-   │ Result: Zero-cost abstractions with compile-time safety│
-   └─────────────────────────────────────────────────────────┘
-
-4. **Unified MPMC Algorithm**
-   ┌─────────────────────────────────────────────────────────┐
-   │ Single algorithm handles all producer/consumer configs  │
-   │ No separate SPSC, SPMC, MPSC implementations needed    │
-   │ Result: Code simplicity without performance compromise │
-   └─────────────────────────────────────────────────────────┘
-</code></pre>
+<h1>MPMC Queue Algorithm</h1>
+This document explains the core algorithm and data structures used in the lockless MPMC queue.
+<h2>Algorithm Background</h2>
+The queue combines ideas from several research algorithms:
 <br>
-This synthesis of established algorithms creates a production-ready implementation that combines the best aspects of each approach while addressing their individual limitations.
-<h2>🏗️ Memory Layout Architecture</h2>
-<h3>Complete System Overview</h3>
+- <strong>Michael & Scott (1996)</strong>: Lock-free queue with atomic operations
+- <strong>LMAX Disruptor</strong>: Sequence-based coordination and cache optimization
+- <strong>1024cores research</strong>: Memory ordering optimization
+<h3>Key Innovations</h3>
+1. <strong>Ring Buffer</strong>: Fixed-size buffer instead of linked list for better cache performance
+2. <strong>Sequence Numbers</strong>: Each slot uses atomic sequence numbers for coordination
+3. <strong>Power-of-2 Sizing</strong>: Enables fast bitwise AND instead of expensive modulo
+4. <strong>Cache-Line Alignment</strong>: Separate cache lines for producer/consumer positions
+<h2>Memory Layout</h2>
 <pre><code>
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                                MPMC Queue System                                │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐           │
-│  │   Producer 1    │    │   Producer 2    │    │   Producer N    │           │
-│  │                 │    │                 │    │                 │           │
-│  │ ┌─────────────┐ │    │ ┌─────────────┐ │    │ ┌─────────────┐ │           │
-│  │ │    send()   │ │    │ │    send()   │ │    │ │    send()   │ │           │
-│  │ └─────────────┘ │    │ └─────────────┘ │    │ └─────────────┘ │           │
-│  └─────────┬───────┘    └─────────┬───────┘    └─────────┬───────┘           │
-│            │                      │                      │                   │
-│            └──────────────────────┼──────────────────────┘                   │
-│                                   │                                          │
-│                                   ▼                                          │
-│  ┌─────────────────────────────────────────────────────────────────────────┐ │
-│  │                           Ring Buffer Core                             │ │
-│  │                                                                       │ │
-│  │  ProducerPos     ConsumerPos           Ring Buffer Slots             │ │
-│  │  ┌──────────┐   ┌──────────┐    ┌─────┬─────┬─────┬─────┬─────┐      │ │
-│  │  │   head   │   │   tail   │    │  0  │  1  │  2  │ ... │ N-1 │      │ │
-│  │  │(Cache L1)│   │(Cache L2)│    │     │     │     │     │     │      │ │
-│  │  └──────────┘   └──────────┘    └─────┴─────┴─────┴─────┴─────┘      │ │
-│  │       ▲               ▲              │                                │ │
-│  │       │               │              ▼                                │ │
-│  │   Atomic CAS      Atomic CAS    Each slot contains:                   │ │
-│  │   Updates         Updates       • Sequence: AtomicUsize               │ │
-│  │                                 • Data: UnsafeCell&lt;MaybeUninit&lt;T&gt;&gt;    │ │
-│  │                                 • 64-byte aligned                     │ │
-│  └─────────────────────────────────────────────────────────────────────────┘ │
-│                                   ▲                                          │
-│            ┌──────────────────────┼──────────────────────┐                   │
-│            │                      │                      │                   │
-│  ┌─────────▼───────┐    ┌─────────▼───────┐    ┌─────────▼───────┐           │
-│  │   Consumer 1    │    │   Consumer 2    │    │   Consumer N    │           │
-│  │                 │    │                 │    │                 │           │
-│  │ ┌─────────────┐ │    │ ┌─────────────┐ │    │ ┌─────────────┐ │           │
-│  │ │    recv()   │ │    │ │    recv()   │ │    │ │    recv()   │ │           │
-│  │ └─────────────┘ │    │ └─────────────┘ │    │ └─────────────┘ │           │
-│  └─────────────────┘    └─────────────────┘    └─────────────────┘           │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
-</code></pre>
-<h3>Cache-Line Optimization Detail</h3>
-<pre><code>
-Memory Layout with Cache-Line Boundaries:
+struct MpmcQueue&lt;T&gt; {
+    buffer: Box&lt;[Slot&lt;T&gt;]&gt;,
+    capacity: usize,
+    mask: usize,                  // capacity - 1 for fast indexing
+    producer_pos: ProducerPos,    // 64-byte aligned
+    consumer_pos: ConsumerPos,    // 64-byte aligned
+}
 
-┌─────────────────────────────────────────────────────────────────┐ ← 64-byte boundary
-│                    Cache Line 0: MpmcQueue                      │
-│  ┌─────────────────────────────────────────────────────────┐    │
-│  │ buffer: Box&lt;[Slot&lt;T&gt;]&gt;                                  │    │
-│  │ capacity: usize                                         │    │  
-│  │ mask: usize                                             │    │
-│  │ producer_pos: ProducerPos                               │    │
-│  │ consumer_pos: ConsumerPos                               │    │
-│  └─────────────────────────────────────────────────────────┘    │
-└─────────────────────────────────────────────────────────────────┘
-
-┌─────────────────────────────────────────────────────────────────┐ ← 64-byte boundary
-│                Cache Line 1: ProducerPos                        │
-│  ┌─────────────────────────────────────────────────────────┐    │
-│  │                head: AtomicUsize                        │    │
-│  │                  (padding)                              │    │
-│  └─────────────────────────────────────────────────────────┘    │
-└─────────────────────────────────────────────────────────────────┘
-
-┌─────────────────────────────────────────────────────────────────┐ ← 64-byte boundary  
-│                Cache Line 2: ConsumerPos                        │
-│  ┌─────────────────────────────────────────────────────────┐    │
-│  │                tail: AtomicUsize                        │    │
-│  │                  (padding)                              │    │
-│  └─────────────────────────────────────────────────────────┘    │
-└─────────────────────────────────────────────────────────────────┘
-
-┌─────────────────────────────────────────────────────────────────┐ ← 64-byte boundary
-│              Cache Line 3+: Ring Buffer Slots                   │
-│  ┌─────────────┬─────────────┬─────────────┬─────────────┐      │
-│  │   Slot 0    │   Slot 1    │   Slot 2    │   Slot 3    │      │
-│  │ ┌─────────┐ │ ┌─────────┐ │ ┌─────────┐ │ ┌─────────┐ │      │
-│  │ │Sequence │ │ │Sequence │ │ │Sequence │ │ │Sequence │ │      │
-│  │ │ Data    │ │ │ Data    │ │ │ Data    │ │ │ Data    │ │      │
-│  │ └─────────┘ │ └─────────┘ │ └─────────┘ │ └─────────┘ │      │
-│  └─────────────┴─────────────┴─────────────┴─────────────┘      │
-└─────────────────────────────────────────────────────────────────┘
-
-Benefits:
-• Producer operations only touch Cache Line 1 + target slot
-• Consumer operations only touch Cache Line 2 + target slot  
-• No false sharing between producers and consumers
-• Each slot is independently cacheable
-</code></pre>
-<h2>🔄 Algorithm State Transitions</h2>
-<h3>Sequence Number State Machine</h3>
-<pre><code>
-Slot Sequence Number States (for 8-element queue):
-
-Initial State (Empty Queue):
-┌─────┬─────┬─────┬─────┬─────┬─────┬─────┬─────┐
-│  0  │  1  │  2  │  3  │  4  │  5  │  6  │  7  │ ← Sequence Numbers
-├─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┤
-│  ∅  │  ∅  │  ∅  │  ∅  │  ∅  │  ∅  │  ∅  │  ∅  │ ← Data (empty)
-└─────┴─────┴─────┴─────┴─────┴─────┴─────┴─────┘
-  ↑
-Producer/Consumer both at position 0
-
-Step 1: Producer writes to slot 0
-┌─────┬─────┬─────┬─────┬─────┬─────┬─────┬─────┐
-│  1  │  1  │  2  │  3  │  4  │  5  │  6  │  7  │ ← Sequence Numbers
-├─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┤
-│ &quot;A&quot; │  ∅  │  ∅  │  ∅  │  ∅  │  ∅  │  ∅  │  ∅  │ ← Data
-└─────┴─────┴─────┴─────┴─────┴─────┴─────┴─────┘
-  ↑     ↑
-Consumer  Producer
-
-Step 2: Consumer reads from slot 0  
-┌─────┬─────┬─────┬─────┬─────┬─────┬─────┬─────┐
-│  8  │  1  │  2  │  3  │  4  │  5  │  6  │  7  │ ← Sequence Numbers
-├─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┤
-│  ∅  │  ∅  │  ∅  │  ∅  │  ∅  │  ∅  │  ∅  │  ∅  │ ← Data (consumed)
-└─────┴─────┴─────┴─────┴─────┴─────┴─────┴─────┘
-        ↑     ↑
-    Consumer  Producer
-
-Step 3: Multiple operations create wrapped state
-┌─────┬─────┬─────┬─────┬─────┬─────┬─────┬─────┐
-│ 16  │  9  │ 10  │ 11  │ 12  │ 13  │ 14  │ 15  │ ← Sequence Numbers  
-├─────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┤
-│  ∅  │ &quot;B&quot; │ &quot;C&quot; │ &quot;D&quot; │ &quot;E&quot; │ &quot;F&quot; │ &quot;G&quot; │ &quot;H&quot; │ ← Data
-└─────┴─────┴─────┴─────┴─────┴─────┴─────┴─────┘
-  ↑                                           ↑
-Producer                                  Consumer
-(wrapped around)                         (7 items queued)
-
-State Meanings:
-• seq == index: Ready for producer to write
-• seq == index + 1: Ready for consumer to read
-• seq == index + capacity: Available after full cycle
-</code></pre>
-<h3>Producer State Transitions</h3>
-<pre><code>
-Producer Decision Flow:
-
-Load head position (atomic)
-         │
-         ▼
-Calculate slot = buffer[head &amp; mask]
-         │
-         ▼
-Load slot.sequence (atomic)
-         │
-         ▼
-    ┌────────────────────────────────────┐
-    │           Compare States           │
-    └┬───────────────────┬───────────────┬┘
-     │                   │               │
-     ▼                   ▼               ▼
-┌─────────┐       ┌─────────────┐   ┌─────────┐
-│seq ==   │       │seq &lt;        │   │seq &gt;    │
-│expected │       │expected     │   │expected │
-│         │       │(behind)     │   │(ahead)  │
-│✅ READY │       │⚠️  FULL?    │   │⚡ RACE  │
-└────┬────┘       └──────┬──────┘   └────┬────┘
-     │                   │               │
-     ▼                   ▼               ▼
-Try CAS(head++)    Check if full    Continue retry
-     │             (head - tail)         │
-     ▼                   │               │
-┌─────────┐             ▼               │
-│Success? │      ┌─────────────┐        │
-└────┬────┘      │Return Error │        │
-     │           │(queue full) │        │
-   ┌─┴─┐         └─────────────┘        │
-   │Yes│No                              │
-   │   │                                │
-   ▼   ▼                                │
-Store  Continue ◄──────────────────────┘
-Data   Retry
- │
- ▼
-Update
-Sequence
- │
- ▼
-Return
-Success
-</code></pre>
-<h3>Consumer State Transitions</h3>
-<pre><code>
-Consumer Decision Flow:
-
-Load tail position (atomic)
-         │
-         ▼
-Calculate slot = buffer[tail &amp; mask]  
-         │
-         ▼
-Load slot.sequence (atomic)
-         │
-         ▼
-    ┌────────────────────────────────────┐
-    │           Compare States           │
-    └┬───────────────────┬───────────────┬┘
-     │                   │               │
-     ▼                   ▼               ▼
-┌─────────┐       ┌─────────────┐   ┌─────────┐
-│seq ==   │       │seq &lt;        │   │seq &gt;    │
-│tail + 1 │       │tail + 1     │   │tail + 1 │
-│         │       │(empty)      │   │(ahead)  │
-│✅ READY │       │📭 EMPTY     │   │⚡ RACE  │
-└────┬────┘       └──────┬──────┘   └────┬────┘
-     │                   │               │
-     ▼                   ▼               ▼
-Try CAS(tail++)    Return None     Continue retry
-     │             (queue empty)        │
-     ▼                                  │
-┌─────────┐                            │
-│Success? │                            │
-└────┬────┘                            │
-     │                                 │
-   ┌─┴─┐                               │
-   │Yes│No                             │
-   │   │                               │
-   ▼   ▼                               │
-Read   Continue ◄─────────────────────┘
-Data   Retry
- │
- ▼
-Mark Available
-(seq += capacity)  
- │
- ▼
-Return
-Some(data)
-</code></pre>
-<h2>⚡ Performance Characteristics</h2>
-<h3>Throughput vs Thread Count</h3>
-<pre><code>
-Operations per Second (Log Scale):
-
-10B ┤                                                    
-    │ ●                                                  
- 1B ┤   ●                                                
-    │     ●●                                             
-100M┤        ●●●                                         
-    │            ●●●●                                    
- 10M┤                 ●●●●●●●●                           
-    │                          ●●●●●●●●●●●●●●●●         
-  1M┤                                               ●●●●●
-    └┬────┬────┬────┬────┬────┬────┬────┬────┬────┬─────
-     1    2    4    8    16   32   64   128  256  512
-                          Thread Count
-
-Legend:
-● Single-threaded throughput (scales with CPU frequency)
-● Multi-producer throughput (scales with parallelism)  
-● Multi-consumer throughput (scales with memory bandwidth)
-● Full MPMC throughput (bounded by contention)
-</code></pre>
-<h3>Latency Distribution</h3>
-<pre><code>
-Latency Histogram (nanoseconds):
-
-Frequency
-    ▲
-    │     ██
-    │   ████                
-    │ ██████                
-1000┤███████                
-    │███████ ██             
- 800┤███████ ███            
-    │███████ ████           
- 600┤███████ █████          
-    │███████ ██████         
- 400┤███████ ███████        
-    │███████ ████████       
- 200┤███████ █████████      
-    │███████ ██████████     
-   0└┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴─────►
-    0 5 10 15 20 25 30 35 40   Latency (ns)
-
-Statistics:
-• P50 (median): 8.9 ns
-• P95: 12.3 ns  
-• P99: 18.7 ns
-• P99.9: 45.2 ns
-• Max observed: 127 ns
-
-Distribution characteristics:
-• Tight clustering around median (good predictability)
-• Long tail due to cache misses and context switches
-• No pathological outliers (no locks = no convoy effects)
-</code></pre>
-<h3>Cache Performance Model</h3>
-<pre><code>
-Memory Access Patterns:
-
-L1 Cache Hit (≤1ns):
-┌─────────────────────────────────────┐
-│ Producer accesses own cache line    │
-│ Consumer accesses own cache line    │  
-│ Recently accessed slots             │
-└─────────────────────────────────────┘
-
-L2 Cache Hit (≤3ns):
-┌─────────────────────────────────────┐
-│ Cross-core slot access              │
-│ Sequence number checks              │
-└─────────────────────────────────────┘
-
-L3 Cache Hit (≤12ns):
-┌─────────────────────────────────────┐
-│ First access to distant slots       │
-│ Cache line eviction recovery        │
-└─────────────────────────────────────┘
-
-Main Memory (≤100ns):
-┌─────────────────────────────────────┐
-│ Cold starts                         │
-│ Memory pressure scenarios           │
-│ NUMA cross-socket access            │
-└─────────────────────────────────────┘
-
-Optimization Impact:
-• 64-byte alignment: ~40% cache miss reduction
-• Power-of-2 sizing: ~15% indexing speedup  
-• Separate producer/consumer positions: ~60% false sharing elimination
-</code></pre>
-<h2>🔧 Debugging Visualizations</h2>
-<h3>Queue State Inspector</h3>
-<pre><code>
-impl&lt;T&gt; MpmcQueue&lt;T&gt; {
-    pub fn debug_state(&amp;self) -&gt; String {
-        format!(
-            &quot;Queue State Debug:
-            Capacity: {}
-            Producer head: {}  
-            Consumer tail: {}
-            Approximate length: {}
-            
-            Slot States:
-            {}&quot;,
-            self.capacity,
-            self.producer_pos.head.load(Ordering::Relaxed),
-            self.consumer_pos.tail.load(Ordering::Relaxed), 
-            self.len(),
-            self.debug_slots()
-        )
-    }
-    
-    fn debug_slots(&amp;self) -&gt; String {
-        let mut result = String::new();
-        for i in 0..self.capacity {
-            let seq = self.buffer[i].sequence.load(Ordering::Relaxed);
-            let state = match seq.cmp(&amp;i) {
-                std::cmp::Ordering::Equal =&gt; &quot;READY_PROD&quot;,
-                std::cmp::Ordering::Greater =&gt; {
-                    if seq == i + 1 { &quot;READY_CONS&quot; } else { &quot;AHEAD&quot; }
-                }
-                std::cmp::Ordering::Less =&gt; &quot;BEHIND&quot;,
-            };
-            result.push_str(&amp;format!(&quot;  Slot {}: seq={}, state={}\n&quot;, i, seq, state));
-        }
-        result
-    }
+struct Slot&lt;T&gt; {
+    sequence: AtomicUsize,        // Coordination mechanism
+    data: UnsafeCell&lt;MaybeUninit&lt;T&gt;&gt;, // Storage
 }
 </code></pre>
-<h3>Visual Queue State Example</h3>
+<h3>Cache Optimization</h3>
+- Producer and consumer positions are in separate cache lines (64-byte aligned)
+- Prevents false sharing between producers and consumers
+- Each slot is independently cacheable
+<h2>Sequence Number States</h2>
 <pre><code>
-Example Debug Output:
+Slot States (8-element queue example):
 
-Queue State Debug:
-Capacity: 8
-Producer head: 15
-Consumer tail: 12  
-Approximate length: 3
+Initial: [0][1][2][3][4][5][6][7] ← Sequence numbers
+         [∅][∅][∅][∅][∅][∅][∅][∅] ← Data (empty)
 
-Slot States:
-  Slot 0: seq=16, state=READY_PROD  │ Available for next producer
-  Slot 1: seq=17, state=READY_PROD  │ Available for next producer  
-  Slot 2: seq=18, state=READY_PROD  │ Available for next producer
-  Slot 3: seq=19, state=READY_PROD  │ Available for next producer
-  Slot 4: seq=13, state=READY_CONS  │ Has data, ready for consumer
-  Slot 5: seq=14, state=READY_CONS  │ Has data, ready for consumer  
-  Slot 6: seq=15, state=READY_CONS  │ Has data, ready for consumer
-  Slot 7: seq=8,  state=BEHIND      │ Being written by producer
+After producer writes to slot 0:
+         [1][1][2][3][4][5][6][7] ← Sequences
+         [A][∅][∅][∅][∅][∅][∅][∅] ← Data
 
-Visual representation:
-┌─────┬─────┬─────┬─────┬─────┬─────┬─────┬─────┐
-│  ∅  │  ∅  │  ∅  │  ∅  │ &quot;A&quot; │ &quot;B&quot; │ &quot;C&quot; │ ⚡  │
-└─────┴─────┴─────┴─────┴─────┴─────┴─────┴─────┘
-  ↑                       ↑           ↑       ↑
-Ready                  Consumer    Data     Producer
-                       can read             writing
+After consumer reads from slot 0:
+         [8][1][2][3][4][5][6][7] ← Sequences  
+         [∅][∅][∅][∅][∅][∅][∅][∅] ← Data (consumed)
+
+Sequence States:
+• seq == index: Ready for producer
+• seq == index + 1: Ready for consumer
+• seq == index + capacity: Available after wrap-around
 </code></pre>
-<h2>⚖️ Multi-Consumer Speed Differential Analysis</h2>
-<h3>Scenario: Mixed Consumer Speeds</h3>
-When consumers operate at different speeds while producers maintain moderate throughput, the queue exhibits sophisticated load balancing behavior.
+<h2>Operation Flow</h2>
+<h3>Producer (Send)</h3>
+1. Load current head position
+2. Calculate slot index using <code>head & mask</code>
+3. Check if slot sequence equals expected value
+4. If yes, try CAS to claim slot
+5. Store data and update sequence to signal completion
+<h3>Consumer (Receive)  </h3>
+1. Load current tail position
+2. Calculate slot index using <code>tail & mask</code>
+3. Check if slot sequence equals <code>tail + 1</code> (data ready)
+4. If yes, try CAS to claim slot
+5. Read data and advance sequence to mark slot available
+<h2>Performance Characteristics</h2>
+- Sub-10ns latency per operation
+- Linear scaling up to 8 producer/consumer threads
+- No convoy effects due to lockless design
+- Optimized cache access patterns minimize memory latency
+<h2>Load Balancing</h2>
+The queue automatically balances work between consumers based on their processing speed:
 <br>
-<pre><code>
-Scenario Setup:
-┌─────────────────────────────────────────────────────────────────────────┐
-│ Producer:        Medium Speed    (1000 items/sec)                       │
-│ Consumer A:      Fast           (1500 items/sec capacity)               │
-│ Consumer B:      Slow           (500 items/sec capacity)                │
-│ Queue Capacity:  8 slots                                                │
-└─────────────────────────────────────────────────────────────────────────┘
-</code></pre>
-<h3>📊 Temporal Behavior Analysis</h3>
-<h4>Phase 1: Initial Equilibrium (t=0-10ms)</h4>
-<pre><code>
-Time Progression:
-
-t=0ms: Queue Empty, All Consumers Ready
-┌─────┬─────┬─────┬─────┬─────┬─────┬─────┬─────┐
-│  ∅  │  ∅  │  ∅  │  ∅  │  ∅  │  ∅  │  ∅  │  ∅  │
-└─────┴─────┴─────┴─────┴─────┴─────┴─────┴─────┘
-  ↑
-Producer &amp; Consumers at position 0
-
-t=2ms: Producer adds items, Consumer A takes lead
-┌─────┬─────┬─────┬─────┬─────┬─────┬─────┬─────┐
-│  ∅  │  ∅  │ &quot;C&quot; │ &quot;D&quot; │ &quot;E&quot; │  ∅  │  ∅  │  ∅  │
-└─────┴─────┴─────┴─────┴─────┴─────┴─────┴─────┘
-        ↑     ↑           ↑
-   Consumer B  Consumer A  Producer
-   (slow)      (fast)
-
-Consumer A processed: &quot;A&quot;, &quot;B&quot; (fast consumption)
-Consumer B processed: &quot;A&quot; (slow consumption) 
-Producer created: &quot;A&quot;, &quot;B&quot;, &quot;C&quot;, &quot;D&quot;, &quot;E&quot;
-</code></pre>
-<h4>Phase 2: Load Imbalance Development (t=10-50ms)</h4>
-<pre><code>
-t=20ms: Consumer A gets majority of items
-┌─────┬─────┬─────┬─────┬─────┬─────┬─────┬─────┐
-│  ∅  │  ∅  │  ∅  │  ∅  │  ∅  │ &quot;P&quot; │ &quot;Q&quot; │ &quot;R&quot; │
-└─────┴─────┴─────┴─────┴─────┴─────┴─────┴─────┘
-              ↑                       ↑       ↑
-         Consumer B               Consumer A  Producer
-         (lagging)               (ahead)
-
-Work Distribution:
-• Consumer A processed: 75% of items (natural due to speed)
-• Consumer B processed: 25% of items (limited by slower speed)
-• Queue utilization: ~40% (3/8 slots occupied)
-
-Item Flow Pattern:
-Producer → Queue → Consumer A (fast pickup)
-              ↳ Consumer B (occasional pickup)
-</code></pre>
-<h4>Phase 3: Natural Load Balancing (t=50ms+)</h4>
-<pre><code>
-Steady State Behavior:
-
-Consumer Speed Differential Creates Natural Work Sharing:
-
-Fast Consumer A Pattern:
-┌─────────────────────────────────────────────────────────┐
-│ 1. Checks slot → Available → Takes item immediately     │
-│ 2. Processes quickly → Returns to queue                 │  
-│ 3. Often finds next item ready → High success rate     │
-│ Result: Gets ~75% of items naturally                   │
-└─────────────────────────────────────────────────────────┘
-
-Slow Consumer B Pattern:
-┌─────────────────────────────────────────────────────────┐
-│ 1. Checks slot → May find Consumer A already took it   │
-│ 2. Retries → Eventually finds available item           │
-│ 3. Processes slowly → Away from queue longer           │
-│ Result: Gets ~25% of items, but no starvation         │
-└─────────────────────────────────────────────────────────┘
-
-Queue State Oscillation (steady state):
-┌─────┬─────┬─────┬─────┬─────┬─────┬─────┬─────┐
-│  ∅  │  ∅  │ &quot;X&quot; │ &quot;Y&quot; │  ∅  │  ∅  │  ∅  │  ∅  │  ← Most common state
-└─────┴─────┴─────┴─────┴─────┴─────┴─────┴─────┘
-              ↑     ↑
-         Available for either consumer
-
-Queue never fills completely due to Consumer A&#x27;s high throughput
-Queue never empties completely due to steady Producer rate
-</code></pre>
-<h3>🔄 Algorithm Fairness Mechanisms</h3>
-<h4>CAS-Based Natural Load Balancing</h4>
-<pre><code>
-Why No Consumer Starvation Occurs:
-
-1. **Atomic Competition**
-   ┌─────────────────────────────────────────────────────────┐
-   │ Both consumers compete with identical CAS operations    │
-   │ No priority system - pure speed-based distribution     │
-   │ Fast consumer wins more CAS attempts simply by trying  │
-   │ more frequently                                         │
-   └─────────────────────────────────────────────────────────┘
-
-2. **Temporal Gaps Create Opportunities**
-   ┌─────────────────────────────────────────────────────────┐
-   │ Fast Consumer A processing periods create windows       │
-   │ where slow Consumer B can successfully claim items      │
-   │                                                         │
-   │ Timeline:                                               │
-   │ Consumer A: Work─┐ ┌─Work─┐ ┌─Work─┐ ┌─Work           │
-   │                  │ │      │ │      │ │                │
-   │ Consumer B:      └─┘      └─┘      └─┘                │
-   │                 ↑        ↑        ↑                   │
-   │            B claims   B claims   B claims              │
-   └─────────────────────────────────────────────────────────┘
-
-3. **Queue Buffer Prevents Deadlock**
-   ┌─────────────────────────────────────────────────────────┐
-   │ 8-slot buffer provides breathing room                   │
-   │ Producer rarely blocks (queue doesn&#x27;t fill)            │
-   │ Consumers rarely starve (queue doesn&#x27;t empty)          │
-   │ Natural flow control without explicit coordination      │
-   └─────────────────────────────────────────────────────────┘
-</code></pre>
-<h3>📈 Performance Characteristics</h3>
-<h4>Throughput Distribution</h4>
-<pre><code>
-Measured Performance (typical scenario):
-
-Total System Throughput: ~1000 items/sec (matches producer)
-
-Consumer A Throughput: ~750 items/sec
-├─ Theoretical max: 1500 items/sec  
-├─ Actual utilization: 50% (limited by producer)
-├─ Success rate: 85% (high CAS success)
-└─ Work share: 75%
-
-Consumer B Throughput: ~250 items/sec  
-├─ Theoretical max: 500 items/sec
-├─ Actual utilization: 50% (limited by producer)
-├─ Success rate: 45% (lower CAS success due to speed)
-└─ Work share: 25%
-
-Queue Statistics:
-├─ Average occupancy: 2.3/8 slots (29%)
-├─ Max observed: 5/8 slots  
-├─ Empty periods: &lt;1% of time
-└─ Full periods: 0% of time
-</code></pre>
-<h4>Latency Impact</h4>
-<pre><code>
-Item Processing Latency Distribution:
-
-Items processed by Consumer A:
-┌─────────────────────────────────────────────────────────┐
-│ Queue residence time: 1-3ms (short wait)               │
-│ Processing time: 0.67ms (fast consumer)                │
-│ Total latency: 1.67-3.67ms                            │
-└─────────────────────────────────────────────────────────┘
-
-Items processed by Consumer B:
-┌─────────────────────────────────────────────────────────┐
-│ Queue residence time: 5-15ms (longer wait)             │
-│ Processing time: 2.0ms (slow consumer)                 │
-│ Total latency: 7-17ms                                  │
-└─────────────────────────────────────────────────────────┘
-
-System-wide Impact:
-• 75% of items get low latency (Consumer A)
-• 25% of items get higher latency (Consumer B)  
-• Average latency: 3.9ms (weighted by distribution)
-• No items experience unbounded delays
-</code></pre>
-<h3>🎯 Key Behavioral Insights</h3>
-<h4>1. **Automatic Load Balancing**</h4>
-<pre><code>
-The algorithm naturally distributes work based on consumer capability:
-┌─────────────────────────────────────────────────────────┐
-│ Fast consumers automatically get proportionally more    │
-│ work without explicit scheduling or priority systems    │
-│                                                         │
-│ Work Distribution Formula:                              │
-│ Consumer_share = Consumer_speed / Total_consumer_speed  │
-│                                                         │
-│ Example:                                                │
-│ A_share = 1500 / (1500 + 500) = 75%                   │
-│ B_share = 500 / (1500 + 500) = 25%                    │
-└─────────────────────────────────────────────────────────┘
-</code></pre>
-<h4>2. **No Starvation Guarantee**</h4>
-<pre><code>
-Slower consumers are never completely starved:
-┌─────────────────────────────────────────────────────────┐
-│ • CAS operations are atomic and fair                   │
-│ • Fast consumer processing creates availability windows │
-│ • Queue buffering prevents temporary blocking           │
-│ • No consumer can monopolize the queue indefinitely     │
-└─────────────────────────────────────────────────────────┘
-</code></pre>
-<h4>3. **Producer Flow Control**</h4>
-<pre><code>
-Producer behavior adapts to consumer capacity:
-┌─────────────────────────────────────────────────────────┐
-│ If combined consumer speed &lt; producer speed:            │
-│ • Queue gradually fills                                 │
-│ • Producer experiences backpressure                     │
-│ • System reaches equilibrium at consumer-limited rate  │
-│                                                         │
-│ In our scenario: 2000 consumer capacity &gt; 1000 producer│
-│ • Queue never fills                                     │
-│ • Producer never blocks                                 │
-│ • System runs at producer-limited rate                 │
-└─────────────────────────────────────────────────────────┘
-</code></pre>
-<br>
-This analysis demonstrates how the MPMC queue's lockless design naturally handles mixed workloads while maintaining fairness and preventing pathological behaviors like starvation or convoy effects.
-<br>
-This comprehensive diagram collection provides deep insight into the sophisticated lockless MPMC queue algorithm, showing both the high-level architecture and low-level implementation details that make it so performant.
+- Fast consumers naturally get more items due to higher CAS success rates
+- Slow consumers are never starved due to temporal windows when fast consumers are processing
+- No explicit priority system needed - pure competition through atomic operations
+- Queue buffering prevents deadlock scenarios
+<h2>Key Benefits</h2>
+- <strong>Automatic fairness</strong>: Work distribution matches consumer capabilities
+- <strong>No starvation</strong>: All consumers eventually get items to process  
+- <strong>Natural backpressure</strong>: Queue fills if consumers can't keep up with producers
+- <strong>Scalable</strong>: Performance scales linearly with thread count up to hardware limits
         </div>
         
         <div style="text-align: center; margin-bottom: 2rem;">
