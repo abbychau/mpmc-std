@@ -61,10 +61,8 @@ cat > docs/index.html << 'EOF'
     </div>
 
     <div class="benchmark-section">
-        <h2>📈 Performance Analysis</h2>
         <p style="text-align: center; margin-bottom: 2rem; color: #475569; font-size: 1.1rem;">
-            Comprehensive benchmark suite showing throughput, latency, and scaling characteristics across all scenarios.
-            <br><strong><a href="benchmarks/report/index.html" style="color: #1e40af; text-decoration: none; padding: 0.5rem 1rem; background: linear-gradient(135deg, rgba(30, 64, 175, 0.06) 0%, rgba(30, 64, 175, 0.08) 100%); border-radius: 6px; margin-top: 0.5rem; display: inline-block; font-weight: 600; font-size: 0.9rem; border: 1px solid rgba(30, 64, 175, 0.12); transition: all 0.25s ease;">→ View Complete Benchmark Report</a></strong>
+            <strong><a href="benchmarks/report/index.html" style="color: #1e40af; text-decoration: none; padding: 0.5rem 1rem; background: linear-gradient(135deg, rgba(30, 64, 175, 0.06) 0%, rgba(30, 64, 175, 0.08) 100%); border-radius: 6px; margin-top: 0.5rem; display: inline-block; font-weight: 600; font-size: 0.9rem; border: 1px solid rgba(30, 64, 175, 0.12); transition: all 0.25s ease;">→ View Criterion.rs Benchmark Indexes</a></strong>
         </p>
         
         <div class="benchmark-grid">
@@ -108,8 +106,7 @@ cat > docs/index.html << 'EOF'
 
     <div class="nav-grid">
         <div class="nav-card">
-            <h2>📚 Technical Documentation</h2>
-            <p>Complete technical reference covering algorithm design, implementation details, memory optimization, performance engineering, and comparative analysis with established research.</p>
+            <p>Technical references covering algorithm design, implementation details, memory optimization, performance engineering, and comparative analysis.</p>
             <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
                 <a href="ALGORITHM_DIAGRAMS.html" style="flex: 1; text-align: center;">Algorithm Diagrams</a>
                 <a href="IMPLEMENTATION_NOTES.html" style="flex: 1; text-align: center;">Implementation Deep Dive</a>
@@ -194,7 +191,6 @@ EOF
         
         <div class="nav-grid">
             <div class="nav-card">
-                <h2>📚 Related Documentation</h2>
                 <p>Explore the complete technical documentation suite for the MPMC Queue implementation.</p>
                 <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
                     <a href="index.html" style="flex: 1; text-align: center;">Documentation Index</a>
