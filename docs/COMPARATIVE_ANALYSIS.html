@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📊 Comparative Analysis - MPMC Queue</title>
+    <link rel="stylesheet" href="shared-styles.css">
+
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="https://github.com/abbychau/mpmc-std" class="github-corner" target="_blank" rel="noopener noreferrer">
+                <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 250 250" fill="#151513" style="position: absolute; top: 0; right: 0">
+                <path d="M0 0l115 115h15l12 27 108 108V0z" fill="#000"/>
+                <path class="octo-arm" d="M128 109c-15-9-9-19-9-19 3-7 2-11 2-11-1-7 3-2 3-2 4 5 2 11 2 11-3 10 5 15 9 16" style="-webkit-transform-origin: 130px 106px; transform-origin: 130px 106px"/>
+                <path class="octo-body" d="M115 115s4 2 5 0l14-14c3-2 6-3 8-3-8-11-15-24 2-41 5-5 10-7 16-7 1-2 3-7 12-11 0 0 5 3 7 16 4 2 8 5 12 9s7 8 9 12c14 3 17 7 17 7-4 8-9 11-11 11 0 6-2 11-7 16-16 16-30 10-41 2 0 3-1 7-5 11l-12 11c-1 1 1 5 1 5z"/>
+                </svg>
+            </a>
+            <h1>📊 Comparative Analysis</h1>
+            <p>Performance comparison with industry-standard queue implementations</p>
+        </div>
+        
+        <div class="content">
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <a href="index.html" class="nav-back">← Back to Documentation Index</a>
+            </div>
+<h1>Algorithmic Analysis: mpmc-std Design Principles</h1>
+<p>This document examines the algorithmic foundations of <code>mpmc-std</code> compared to established queue implementations, focusing on design trade-offs and architectural differences rather than performance claims.</p>
+<h2>Algorithmic Approaches Overview</h2>
+<h3>Memory Layout Comparison</h3>
+<pre><code>
+LMAX Disruptor (Ring Buffer):
+┌─────┬─────┬─────┬─────┬─────┬─────┬─────┬─────┐
+│  0  │  1  │  2  │  3  │  4  │  5  │  6  │  7  │
+└─────┴─────┴─────┴─────┴─────┴─────┴─────┴─────┘
+      ↑                               ↑
+   Producer                       Consumer
+   Sequence                       Sequence
+Michael &amp; Scott (Linked Nodes):
+Head → [Node] → [Node] → [Node] → [Node] → Tail
+       ┌─────┐   ┌─────┐   ┌─────┐   ┌─────┐
+       │Data │   │Data │   │Data │   │Data │
+       │Next*│   │Next*│   │Next*│   │Next*│
+       └─────┘   └─────┘   └─────┘   └─────┘
+mpmc-std (Sequence-Coordinated Array):
+┌─────┬─────┬─────┬─────┬─────┬─────┬─────┬─────┐
+│ S:0 │ S:1 │ S:2 │ S:3 │ S:4 │ S:5 │ S:6 │ S:7 │
+│ [D] │ [D] │ [D] │ [D] │ [D] │ [D] │ [D] │ [D] │
+└─────┴─────┴─────┴─────┴─────┴─────┴─────┴─────┘
+S = Sequence Number, D = Data Slot
+</code></pre>
+<h2>Core Algorithmic Differences</h2>
+<h3>1. LMAX Disruptor Algorithm</h3>
+<p><strong>Core Principle</strong>: Ring buffer with sequence barriers and memory barriers for coordination.</p>
+<br>
+<pre><code>
+Algorithm: Disruptor Send
+1. claim_slot = next_sequence++
+2. wait_for_slot_available(claim_slot)
+3. write_data_to_slot(claim_slot)
+4. publish_sequence(claim_slot)
+5. notify_consumers()
+Memory Barriers:
+- Store-Store before publish
+- Load-Acquire for dependency tracking
+- Complex barrier coordination for multiple consumers
+</code></pre>
+<br>
+<p><strong>Key Characteristics</strong>:</p>
+<ul>
+<li><strong>Coordination</strong>: Complex sequence barriers and dependency chains</li>
+<li><strong>Memory Management</strong>: Pre-allocated ring buffer</li>
+<li><strong>Ordering</strong>: Strong ordering guarantees with memory barriers</li>
+<li><strong>Complexity</strong>: Multiple sequence types (producer, consumer, gating)</li>
+</ul>
+<h3>2. Michael & Scott Algorithm</h3>
+<p><strong>Core Principle</strong>: Lock-free linked list with atomic compare-and-swap on head/tail pointers.</p>
+<br>
+<pre><code>
+Algorithm: Michael &amp; Scott Enqueue
+1. node = allocate_new_node(data)
+2. loop:
+3.   tail = load_tail()
+4.   next = load_tail_next() 
+5.   if tail == current_tail:
+6.     if next == null:
+7.       if CAS(tail.next, null, node):
+8.         break
+9.     else:
+10.      CAS(tail_ptr, tail, next)  // Help move tail
+11. CAS(tail_ptr, tail, node)
+Memory Pattern:
+- Dynamic allocation per operation
+- Pointer chasing through linked structure
+- ABA problem mitigation required
+</code></pre>
+<br>
+<p><strong>Key Characteristics</strong>:</p>
+<ul>
+<li><strong>Coordination</strong>: Atomic pointer manipulation with helping protocol</li>
+<li><strong>Memory Management</strong>: Dynamic allocation per enqueue/dequeue</li>
+<li><strong>Ordering</strong>: Natural FIFO through linked structure</li>
+<li><strong>Complexity</strong>: ABA problem handling, memory reclamation</li>
+</ul>
+<h3>3. mpmc-std Algorithm</h3>
+<p><strong>Core Principle</strong>: Array slots with per-slot sequence numbers for coordination.</p>
+<br>
+<pre><code>
+Algorithm: mpmc-std Send
+1. pos = head.fetch_add(1, Relaxed)
+2. slot = &amp;buffer[pos &amp; mask]
+3. while slot.sequence.load(Acquire) != pos:
+4.   spin_loop_hint()
+5. slot.item.write(data)
+6. slot.sequence.store(pos + 1, Release)
+Sequence States:
+- slot.sequence == pos     → Ready for producer
+- slot.sequence == pos + 1 → Data available for consumer  
+- slot.sequence == pos + N → Consumed, waiting for wraparound
+</code></pre>
+<br>
+<p><strong>Key Characteristics</strong>:</p>
+<ul>
+<li><strong>Coordination</strong>: Per-slot sequence matching</li>
+<li><strong>Memory Management</strong>: Fixed pre-allocated array</li>
+<li><strong>Ordering</strong>: Mathematical sequence progression</li>
+<li><strong>Complexity</strong>: Simple slot state machine</li>
+</ul>
+<h2>Detailed Algorithmic Analysis</h2>
+<h3>Coordination Mechanisms</h3>
+<h4>Disruptor: Barrier-Based Coordination</h4>
+<pre><code>
+Producer Barriers:     Consumer Barriers:
+┌─────────────────┐   ┌─────────────────┐
+│ Claim Sequence  │   │ Wait for Data   │
+│ Wait for Space  │   │ Process Batch   │
+│ Write Data      │   │ Update Cursor   │
+│ Publish Batch   │   │ Signal Complete │
+└─────────────────┘   └─────────────────┘
+        │                       │
+        └──── Memory Barriers ──┘
+</code></pre>
+<h4>mpmc-std: Sequence Matching</h4>
+<pre><code>
+Producer Flow:              Consumer Flow:
+┌─────────────────┐        ┌─────────────────┐
+│ Get Position    │        │ Get Position    │
+│ Wait for Slot   │ ←---→  │ Wait for Data   │
+│ Write Data      │        │ Read Data       │
+│ Release Slot    │        │ Release Slot    │
+└─────────────────┘        └─────────────────┘
+</code></pre>
+<h2>Comparison Summary Table</h2>
+<table><thead><tr><th>Feature</th><th>LMAX Disruptor</th><th>Michael & Scott</th><th>mpmc-std</th></tr></thead><tbody><tr><td><strong>Coordination</strong></td><td>Sequence barriers</td><td>Atomic pointer ops</td><td>Per-slot sequence numbers</td></tr><tr><td><strong>Memory Layout</strong></td><td>Ring buffer</td><td>Linked nodes</td><td>Fixed array</td></tr><tr><td><strong>Memory Management</strong></td><td>Pre-allocated</td><td>Dynamic allocation</td><td>Pre-allocated</td></tr><tr><td><strong>Ordering</strong></td><td>Strong (barriers)</td><td>FIFO (linked list)</td><td>Mathematical sequence</td></tr><tr><td><strong>Complexity</strong></td><td>High (multiple seqs)</td><td>Medium (ABA, helping)</td><td>Low (slot state machine)</td></tr><tr><td><strong>Scalability</strong></td><td>High (batch, barriers)</td><td>High (lock-free)</td><td>High (lock-free, simple)</td></tr><tr><td><strong>ABA Handling</strong></td><td>Not required</td><td>Required</td><td>Not required</td></tr><tr><td><strong>Producer/Consumer</strong></td><td>Multiple</td><td>Multiple</td><td>Multiple</td></tr><tr><td><strong>Typical Use Case</strong></td><td>Low-latency trading</td><td>General-purpose queues</td><td>General-purpose queues</td></tr></tbody></table>
+<br>
+<br>
+        </div>
+        
+        <div class="nav-grid">
+            <div class="nav-card">
+                <p>Explore the complete technical documentation suite for the MPMC Queue implementation.</p>
+                <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+                    <a href="index.html" style="flex: 1; text-align: center;">Documentation Index</a>
+                    <a href="COMPARATIVE_ANALYSIS.html" style="flex: 1; text-align: center;">Comparative Analysis</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <div class="footer-brand">MPMC Queue - High-Performance Lockless Data Structure</div>
+        <p>Built with Rust • Benchmarked with Criterion.rs • Optimized for Modern Hardware</p>
+        <p style="font-size: 0.9rem; margin-top: 1rem;">
+            Research-grade implementation combining Michael & Scott, LMAX Disruptor, and modern optimization techniques
+        </p>
+    </div>
+</body>
+</html>

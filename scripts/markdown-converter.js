@@ -48,6 +48,75 @@ class MarkdownConverter {
         return line;
     }
 
+    isTableRow(line) {
+        const trimmed = line.trim();
+        return trimmed.includes('|') && trimmed.length > 0;
+    }
+
+    isTableSeparator(line) {
+        const trimmed = line.trim();
+        return /^\|?[\s\-\|:]*\|?$/.test(trimmed) && trimmed.includes('-');
+    }
+
+    parseTableRow(line, isHeader = false) {
+        const trimmed = line.trim();
+        // Remove leading and trailing pipes if present
+        const cleanLine = trimmed.replace(/^\|/, '').replace(/\|$/, '');
+        const cells = cleanLine.split('|').map(cell => cell.trim());
+        
+        const tag = isHeader ? 'th' : 'td';
+        const cellsHtml = cells.map(cell => 
+            `<${tag}>${this.processInlineElements(cell)}</${tag}>`
+        ).join('');
+        
+        return `<tr>${cellsHtml}</tr>`;
+    }
+
+    processTable(lines, startIndex) {
+        let currentIndex = startIndex;
+        const tableRows = [];
+        let hasHeader = false;
+        
+        // Check if the second line is a separator (indicating header)
+        if (currentIndex + 1 < lines.length && this.isTableSeparator(lines[currentIndex + 1])) {
+            hasHeader = true;
+        }
+        
+        // Process all consecutive table rows
+        while (currentIndex < lines.length && this.isTableRow(lines[currentIndex])) {
+            const line = lines[currentIndex];
+            
+            if (this.isTableSeparator(line)) {
+                // Skip separator rows
+                currentIndex++;
+                continue;
+            }
+            
+            const isHeader = hasHeader && tableRows.length === 0;
+            tableRows.push(this.parseTableRow(line, isHeader));
+            currentIndex++;
+        }
+        
+        if (tableRows.length === 0) {
+            return { html: '', endIndex: startIndex };
+        }
+        
+        let tableHtml = '<table>';
+        
+        if (hasHeader && tableRows.length > 0) {
+            tableHtml += '<thead>' + tableRows[0] + '</thead>';
+            if (tableRows.length > 1) {
+                tableHtml += '<tbody>' + tableRows.slice(1).join('') + '</tbody>';
+            }
+        } else {
+            tableHtml += '<tbody>' + tableRows.join('') + '</tbody>';
+        }
+        
+        tableHtml += '</table>';
+        
+        return { html: tableHtml, endIndex: currentIndex - 1 };
+    }
+
     convertLine(line, index, lines) {
         const trimmed = line.trim();
         
@@ -140,9 +209,26 @@ class MarkdownConverter {
         this.inCodeBlock = false;
         this.codeBlockLanguage = '';
         
-        for (let i = 0; i < lines.length; i++) {
+        let i = 0;
+        while (i < lines.length) {
             const line = lines[i];
             const trimmed = line.trim();
+            
+            // Check for tables first
+            if (this.isTableRow(line) && !this.inCodeBlock) {
+                // Close any open list before starting table
+                if (inList) {
+                    result.push(`</${listType}>`);
+                    inList = false;
+                    listType = null;
+                }
+                
+                const tableResult = this.processTable(lines, i);
+                result.push(tableResult.html);
+                i = tableResult.endIndex + 1;
+                continue;
+            }
+            
             const convertedLine = this.convertLine(line, i, lines);
             
             // Handle list wrapping
@@ -180,6 +266,8 @@ class MarkdownConverter {
                     result.push(convertedLine);
                 }
             }
+            
+            i++;
         }
         
         // Close any remaining open list

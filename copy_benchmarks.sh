@@ -110,6 +110,7 @@ cat > docs/index.html << 'EOF'
             <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
                 <a href="ALGORITHM_DIAGRAMS.html" style="flex: 1; text-align: center;">Algorithm Diagrams</a>
                 <a href="IMPLEMENTATION_NOTES.html" style="flex: 1; text-align: center;">Implementation Deep Dive</a>
+                <a href="COMPARATIVE_ANALYSIS.html" style="flex: 1; text-align: center;">Comparative Analysis</a>
             </div>
         </div>
     </div>
@@ -194,7 +195,7 @@ EOF
                 <p>Explore the complete technical documentation suite for the MPMC Queue implementation.</p>
                 <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
                     <a href="index.html" style="flex: 1; text-align: center;">Documentation Index</a>
-                    <a href="../benchmarks/report/index.html" style="flex: 1; text-align: center;">Benchmark Results</a>
+                    <a href="COMPARATIVE_ANALYSIS.html" style="flex: 1; text-align: center;">Comparative Analysis</a>
                 </div>
             </div>
         </div>
@@ -221,6 +222,10 @@ if [ -f "docs/IMPLEMENTATION_NOTES.md" ]; then
     create_html_doc "docs/IMPLEMENTATION_NOTES.md" "docs/IMPLEMENTATION_NOTES.html" "🔬 Implementation Deep Dive" "Technical details and performance engineering"
 fi
 
+if [ -f "docs/COMPARATIVE_ANALYSIS.md" ]; then
+    create_html_doc "docs/COMPARATIVE_ANALYSIS.md" "docs/COMPARATIVE_ANALYSIS.html" "📊 Comparative Analysis" "Performance comparison with industry-standard queue implementations"
+fi
+
 # Create README.html link (assumes README.md will be viewed as HTML)
 if [ -f "README.md" ]; then
     cp README.md docs/README.html
@@ -235,6 +240,7 @@ echo "   - docs/index.html (main navigation)"
 echo "   - docs/benchmarks/ (copied from target/criterion)"
 echo "   - docs/ALGORITHM_DIAGRAMS.html"
 echo "   - docs/IMPLEMENTATION_NOTES.html"
+echo "   - docs/COMPARATIVE_ANALYSIS.html"
 echo "   - docs/README.html"
 echo ""
 echo "🌐 Open docs/index.html in your browser to navigate the documentation"

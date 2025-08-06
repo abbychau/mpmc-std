@@ -846,3 +846,108 @@ pre:hover {
         margin-top: 1.5rem;
     }
 }
+
+/* Tables */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 2rem 0;
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.9));
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.4),
+        0 1px 0 rgba(255, 255, 255, 0.1) inset;
+    border: 1px solid rgba(100, 181, 246, 0.3);
+}
+
+th, td {
+    padding: 1.25rem 1.5rem;
+    text-align: left;
+    border-bottom: 1px solid rgba(100, 181, 246, 0.3);
+    border-right: 1px solid rgba(100, 181, 246, 0.2);
+}
+
+th {
+    background: linear-gradient(135deg, rgba(30, 64, 175, 0.8), rgba(55, 48, 163, 0.7));
+    font-weight: 700;
+    color: #ffffff;
+    text-transform: uppercase;
+    font-size: 0.875rem;
+    letter-spacing: 0.8px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+    border-bottom: 2px solid rgba(100, 181, 246, 0.5);
+}
+
+td {
+    color: #ffffff;
+    background: rgba(15, 23, 42, 0.4);
+    font-weight: 500;
+}
+
+tr:hover {
+    background: rgba(100, 181, 246, 0.15);
+}
+
+tr:last-child td {
+    border-bottom: none;
+}
+
+td:last-child, th:last-child {
+    border-right: none;
+}
+
+/* Code blocks inside tables */
+table code {
+    background: rgba(0, 0, 0, 0.8);
+    color: #ffeb3b;
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    border: 1px solid rgba(255, 235, 59, 0.3);
+}
+
+/* Special table styling for comparison tables */
+table.comparison th:first-child {
+    background: linear-gradient(135deg, #1976d2, #1565c0);
+    color: white;
+}
+
+table.comparison td:first-child {
+    font-weight: 700;
+    color: #81c784;
+    background: rgba(15, 23, 42, 0.6);
+}
+
+/* Strong elements in table cells */
+table td strong, table th strong {
+    color: #ffffff;
+    font-weight: 700;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+/* Alternating row colors for better readability */
+tbody tr:nth-child(even) {
+    background: rgba(15, 23, 42, 0.5);
+}
+
+tbody tr:nth-child(odd) {
+    background: rgba(30, 41, 59, 0.4);
+}
+
+/* Table responsiveness */
+@media (max-width: 640px) {
+    table {
+        margin: 1rem 0;
+    }
+    
+    th, td {
+        padding: 0.75rem 1rem;
+        font-size: 0.875rem;
+    }
+    
+    th {
+        font-size: 0.8rem;
+    }
+}
