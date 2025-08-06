@@ -4,200 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🔬 Implementation Deep Dive - MPMC Queue</title>
-    <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', sans-serif;
-            line-height: 1.6;
-            color: #1a202c;
-            margin: 0;
-            padding: 0;
-            background: 
-                linear-gradient(135deg, rgba(99, 102, 241, 0.03) 0%, rgba(139, 92, 246, 0.03) 100%),
-                repeating-linear-gradient(
-                    0deg,
-                    transparent,
-                    transparent 50px,
-                    rgba(99, 102, 241, 0.02) 50px,
-                    rgba(99, 102, 241, 0.02) 51px
-                ),
-                repeating-linear-gradient(
-                    90deg,
-                    transparent,
-                    transparent 50px,
-                    rgba(139, 92, 246, 0.02) 50px,
-                    rgba(139, 92, 246, 0.02) 51px
-                ),
-                radial-gradient(circle at 20% 80%, rgba(99, 102, 241, 0.05) 0%, transparent 50%),
-                radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.05) 0%, transparent 50%),
-                #fafbfc;
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        .header {
-            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%);
-            color: white;
-            padding: 3rem 2rem;
-            border-radius: 16px;
-            margin-bottom: 3rem;
-            text-align: center;
-            position: relative;
-            box-shadow: 
-                0 20px 25px -5px rgba(99, 102, 241, 0.1),
-                0 10px 10px -5px rgba(99, 102, 241, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        .content {
-            background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
-            padding: 3rem;
-            border-radius: 20px;
-            box-shadow: 
-                0 10px 15px -3px rgba(0, 0, 0, 0.1),
-                0 4px 6px -2px rgba(0, 0, 0, 0.05);
-            border: 1px solid rgba(99, 102, 241, 0.06);
-            margin-bottom: 3rem;
-            position: relative;
-            overflow: hidden;
-        }
-        .content::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, #6366f1, #8b5cf6, #a855f7, #ec4899);
-        }
-        .nav-back {
-            display: inline-block;
-            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-            color: white;
-            padding: 0.75rem 1.5rem;
-            text-decoration: none;
-            border-radius: 12px;
-            margin: 2rem 0;
-            font-weight: 500;
-            transition: all 0.2s ease;
-            box-shadow: 0 2px 4px rgba(99, 102, 241, 0.2);
-        }
-        .nav-back:hover {
-            background: linear-gradient(135deg, #5855eb 0%, #7c3aed 100%);
-            transform: translateY(-1px);
-            box-shadow: 0 4px 8px rgba(99, 102, 241, 0.3);
-        }
-        .github-corner {
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: 80px;
-            height: 80px;
-            overflow: hidden;
-        }
-        .github-corner svg {
-            fill: rgba(255, 255, 255, 0.9);
-            color: #667eea;
-            position: absolute;
-            top: 0;
-            border: 0;
-            right: 0;
-        }
-        .github-corner:hover svg {
-            fill: rgba(255, 255, 255, 1);
-        }
-        h1, h2, h3, h4, h5, h6 {
-            color: #374151;
-        }
-        .header h1 {
-            color: white;
-        }
-        h1 { font-size: 2rem; margin-top: 2rem; }
-        h2 { font-size: 1.5rem; margin-top: 1.5rem; border-bottom: 2px solid #e5e7eb; padding-bottom: 0.5rem; }
-        h3 { font-size: 1.3rem; margin-top: 1.3rem; }
-        h4 { font-size: 1.1rem; margin-top: 1.1rem; }
-        ul, ol { padding-left: 2rem; }
-        blockquote {
-            border-left: 4px solid #6366f1;
-            margin: 1rem 0;
-            padding-left: 1rem;
-            color: #666;
-        }
-        .footer {
-            background: linear-gradient(135deg, #1f2937 0%, #374151 100%);
-            color: rgba(255, 255, 255, 0.9);
-            text-align: center;
-            padding: 4rem 2rem 3rem 2rem;
-            margin-top: 4rem;
-            border-top: 4px solid transparent;
-            border-image: linear-gradient(90deg, #6366f1, #8b5cf6, #a855f7, #ec4899) 1;
-            position: relative;
-            width: 100%;
-            box-sizing: border-box;
-        }
-        .footer::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, #6366f1, #8b5cf6, #a855f7, #ec4899, transparent);
-        }
-        .footer p {
-            margin: 0.5rem 0;
-            opacity: 0.8;
-        }
-        .footer .footer-brand {
-            font-size: 1.1rem;
-            font-weight: 500;
-            opacity: 1;
-            margin-bottom: 1rem;
-        }
-        
-        /* Code styling */
-        code {
-            background: rgba(99, 102, 241, 0.08);
-            color: #6366f1;
-            padding: 0.2em 0.4em;
-            border-radius: 6px;
-            font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
-            font-size: 0.9em;
-            font-weight: 500;
-            border: 1px solid rgba(99, 102, 241, 0.12);
-        }
-        
-        pre {
-            background: linear-gradient(145deg, #f8fafc 0%, #f1f5f9 100%);
-            border: 1px solid rgba(99, 102, 241, 0.1);
-            border-radius: 12px;
-            padding: 1.5rem;
-            margin: 1.5rem 0;
-            overflow-x: auto;
-            box-shadow: 
-                0 4px 6px -1px rgba(0, 0, 0, 0.05),
-                0 2px 4px -1px rgba(0, 0, 0, 0.03);
-        }
-        
-        pre code {
-            background: none;
-            color: #374151;
-            padding: 0;
-            border-radius: 0;
-            border: none;
-            font-size: 0.875rem;
-            line-height: 1.6;
-            font-weight: 400;
-        }
-        
-        pre:hover {
-            box-shadow: 
-                0 10px 15px -3px rgba(99, 102, 241, 0.08),
-                0 4px 6px -2px rgba(99, 102, 241, 0.04);
-        }
-    </style>
+    <link rel="stylesheet" href="shared-styles.css">
+
 </head>
 <body>
     <div class="container">
@@ -214,38 +22,44 @@
         </div>
         
         <div class="content">
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <a href="index.html" class="nav-back">← Back to Documentation Index</a>
+            </div>
 <h1>Implementation Details</h1>
-This document explains the key implementation decisions and technical details of the lockless MPMC queue.
+<p>This document explains the key implementation decisions and technical details of the lockless MPMC queue.</p>
 <h2>Core Algorithm</h2>
 <h3>Sequence-Based Coordination</h3>
-The algorithm uses sequence numbers instead of flags for coordination:
+<p>The algorithm uses sequence numbers instead of flags for coordination:</p>
 <br>
-<pre><code>
+<pre><code class="language-rust">
 struct Slot&lt;T&gt; {
     sequence: AtomicUsize,              // Single coordination point
     data: UnsafeCell&lt;MaybeUninit&lt;T&gt;&gt;,   // Raw storage
 }
 </code></pre>
 <br>
-<strong>Benefits:</strong>
-- ABA immunity: sequences always advance
-- Single atomic operation for state check
-- Natural ordering guarantees
-- Wait-free progress bounds
+<p><strong>Benefits:</strong></p>
+<ul>
+<li>ABA immunity: sequences always advance</li>
+<li>Single atomic operation for state check</li>
+<li>Natural ordering guarantees</li>
+<li>Wait-free progress bounds</li>
+</ul>
 <h3>Memory Ordering</h3>
-Careful memory ordering ensures correctness:
+<p>Careful memory ordering ensures correctness:</p>
+<ul>
+<li><strong>Relaxed</strong>: Position loads (just need current value)</li>
+<li><strong>Acquire</strong>: Sequence loads (see previous writes)</li>
+<li><strong>Release</strong>: Sequence stores (make writes visible)</li>
+</ul>
 <br>
-- <strong>Relaxed</strong>: Position loads (just need current value)
-- <strong>Acquire</strong>: Sequence loads (see previous writes)
-- <strong>Release</strong>: Sequence stores (make writes visible)
-<br>
-<pre><code>
+<pre><code class="language-rust">
 // Producer stores data BEFORE updating sequence
 unsafe { (*slot.data.get()).write(item); }
 slot.sequence.store(new_seq, Ordering::Release);
 </code></pre>
 <h3>ABA Problem Prevention</h3>
-Sequence numbers prevent the ABA problem by always advancing:
+<p>Sequence numbers prevent the ABA problem by always advancing:</p>
 <br>
 <pre><code>
 Slot 0: 0 → 1 → 8 → 9 → 16 → 17 → ...
@@ -253,33 +67,30 @@ Slot 0: 0 → 1 → 8 → 9 → 16 → 17 → ...
        Init Prod Cons Prod Cons Prod
 </code></pre>
 <br>
-Even if the same logical state occurs, the sequence number is different.
+<p>Even if the same logical state occurs, the sequence number is different.</p>
 <h2>Power-of-2 Optimization</h2>
-Capacity is rounded to power-of-2 for fast indexing:
+<p>Capacity is rounded to power-of-2 for fast indexing:</p>
 <br>
-<pre><code>
+<pre><code class="language-rust">
 // Instead of expensive modulo:
 position % capacity  // ~20-40 cycles
-
 // Use fast bitwise AND:
 position &amp; mask      // ~1 cycle
-
 // Example: capacity=1024, mask=1023
 // 5000 % 1024 = 904  (slow)
 // 5000 &amp; 1023 = 904  (fast)
 </code></pre>
 <br>
-Capacity is automatically rounded up to the next power-of-2.
+<p>Capacity is automatically rounded up to the next power-of-2.</p>
 <h2>Cache-Line Alignment</h2>
-Prevents false sharing by separating producer and consumer positions:
+<p>Prevents false sharing by separating producer and consumer positions:</p>
 <br>
-<pre><code>
+<pre><code class="language-rust">
 #[repr(align(64))]  // 64-byte cache line alignment
 struct ProducerPos {
     head: AtomicUsize,
     // 56 bytes padding
 }
-
 #[repr(align(64))]
 struct ConsumerPos {
     tail: AtomicUsize, 
@@ -287,61 +98,73 @@ struct ConsumerPos {
 }
 </code></pre>
 <br>
-<strong>Benefit</strong>: ~40% performance improvement by eliminating cache invalidations between cores.
+<p><strong>Benefit</strong>: ~40% performance improvement by eliminating cache invalidations between cores.</p>
 <h2>Atomic Operations</h2>
 <h3>Compare-Exchange-Weak</h3>
-Uses <code>compare_exchange_weak</code> instead of strong version:
-- More efficient on ARM/PowerPC architectures
-- Allows spurious failures (acceptable since we're in retry loops)
-- Better power consumption
+<p>Uses <code>compare<em>exchange</em>weak</code> instead of strong version:</p>
+<ul>
+<li>More efficient on ARM/PowerPC architectures</li>
+<li>Allows spurious failures (acceptable since we're in retry loops)</li>
+<li>Better power consumption</li>
+</ul>
 <h3>Memory Ordering Strategy</h3>
-- <strong>Relaxed</strong>: Position loads (no synchronization needed)
-- <strong>Acquire</strong>: Sequence loads (see previous writes) 
-- <strong>Release</strong>: Sequence stores (make writes visible)
-- <strong>Avoids SeqCst</strong>: Too expensive for this use case
+<ul>
+<li><strong>Relaxed</strong>: Position loads (no synchronization needed)</li>
+<li><strong>Acquire</strong>: Sequence loads (see previous writes)</li>
+<li><strong>Release</strong>: Sequence stores (make writes visible)</li>
+<li><strong>Avoids SeqCst</strong>: Too expensive for this use case</li>
+</ul>
 <h2>Memory Safety</h2>
-Achieves memory safety without garbage collection:
+<p>Achieves memory safety without garbage collection:</p>
 <br>
-<pre><code>
+<pre><code class="language-rust">
 struct Slot&lt;T&gt; {
     sequence: AtomicUsize,              // Coordination
     data: UnsafeCell&lt;MaybeUninit&lt;T&gt;&gt;,   // Safe uninitialized storage
 }
 </code></pre>
 <br>
-<strong>Safety invariants:</strong>
-1. Data written only when sequence == expected
-2. Data read only when sequence == expected + 1
-3. Sequence coordination prevents access races
-4. Proper cleanup in Drop implementation
+<p><strong>Safety invariants:</strong></p>
+<ol>
+<li>Data written only when sequence == expected</li>
+<li>Data read only when sequence == expected + 1</li>
+<li>Sequence coordination prevents access races</li>
+<li>Proper cleanup in Drop implementation</li>
+</ol>
 <br>
-<strong>Send/Sync traits</strong>: Safely implemented using sequence coordination to prevent data races.
+<p><strong>Send/Sync traits</strong>: Safely implemented using sequence coordination to prevent data races.</p>
 <h2>Performance Optimizations</h2>
 <h3>Branch Prediction</h3>
-Code structure favors common case (successful operations) to help CPU branch predictor.
+<p>Code structure favors common case (successful operations) to help CPU branch predictor.</p>
 <h3>CPU Cache Utilization</h3>
-- Sequential ring buffer access patterns enable prefetching
-- Temporal locality: threads access consecutive slots
-- Spatial locality: 64-byte alignment fits cache boundaries
-- Each position gets own cache line to prevent false sharing
+<ul>
+<li>Sequential ring buffer access patterns enable prefetching</li>
+<li>Temporal locality: threads access consecutive slots</li>
+<li>Spatial locality: 64-byte alignment fits cache boundaries</li>
+<li>Each position gets own cache line to prevent false sharing</li>
+</ul>
 <h2>Common Pitfalls</h2>
 <h3>Sequence Number Overflow</h3>
-Wrapping arithmetic is intentional and safe - maintains ordering even when numbers wrap around.
+<p>Wrapping arithmetic is intentional and safe - maintains ordering even when numbers wrap around.</p>
 <h3>Memory Ordering</h3>
-Critical to use <code>Release</code> ordering when storing sequences to make data writes visible.
-<h3>Capacity Requirements  </h3>
-Capacity is automatically rounded up to next power-of-2 for optimal performance.
+<p>Critical to use <code>Release</code> ordering when storing sequences to make data writes visible.</p>
+<h3>Capacity Requirements</h3>
+<p>Capacity is automatically rounded up to next power-of-2 for optimal performance.</p>
 <h2>Performance Tips</h2>
 <h3>Profiling</h3>
-- Monitor cache miss rate (<5% is good)
-- Check branch prediction accuracy (>95% is good)
-- Watch cycles per instruction (<2.0 is good)
+<ul>
+<li>Monitor cache miss rate (<5% is good)</li>
+<li>Check branch prediction accuracy (>95% is good)</li>
+<li>Watch cycles per instruction (<2.0 is good)</li>
+</ul>
 <h3>Common Issues</h3>
-- <strong>Too small capacity</strong>: Increase size to reduce contention
-- <strong>Too many threads</strong>: Consider multiple queues with >8 threads
-- <strong>Large items</strong>: Use <code>Arc<T></code> or <code>Box<T></code> for indirect storage
+<ul>
+<li><strong>Too small capacity</strong>: Increase size to reduce contention</li>
+<li><strong>Too many threads</strong>: Consider multiple queues with >8 threads</li>
+<li><strong>Large items</strong>: Use <code>Arc<T></code> or <code>Box<T></code> for indirect storage</li>
+</ul>
 <h3>Debugging</h3>
-<pre><code>
+<pre><code class="language-rust">
 // Queue provides introspection methods
 queue.capacity();  // Power-of-2 capacity
 queue.len();       // Approximate current length
@@ -350,8 +173,15 @@ queue.is_full();   // Snapshot view
 </code></pre>
         </div>
         
-        <div style="text-align: center; margin-bottom: 2rem;">
-            <a href="index.html" class="nav-back">← Back to Documentation Index</a>
+        <div class="nav-grid">
+            <div class="nav-card">
+                <h2>📚 Related Documentation</h2>
+                <p>Explore the complete technical documentation suite for the MPMC Queue implementation.</p>
+                <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+                    <a href="index.html" style="flex: 1; text-align: center;">Documentation Index</a>
+                    <a href="../benchmarks/report/index.html" style="flex: 1; text-align: center;">Benchmark Results</a>
+                </div>
+            </div>
         </div>
     </div>
 

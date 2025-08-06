@@ -1,0 +1,26 @@
+{
+  "name": "mpmc-docs-generator",
+  "version": "1.0.0",
+  "description": "Documentation generator for MPMC Queue project",
+  "main": "scripts/markdown-converter.js",
+  "scripts": {
+    "convert": "node scripts/markdown-converter.js",
+    "docs": "./copy_benchmarks.sh",
+    "preview": "./preview_docs.sh"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "keywords": [
+    "markdown",
+    "html",
+    "documentation",
+    "converter",
+    "mpmc",
+    "queue"
+  ],
+  "author": "MPMC Queue Project",
+  "license": "MIT",
+  "devDependencies": {},
+  "dependencies": {}
+}

@@ -4,200 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🎨 Algorithm Diagrams - MPMC Queue</title>
-    <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', sans-serif;
-            line-height: 1.6;
-            color: #1a202c;
-            margin: 0;
-            padding: 0;
-            background: 
-                linear-gradient(135deg, rgba(99, 102, 241, 0.03) 0%, rgba(139, 92, 246, 0.03) 100%),
-                repeating-linear-gradient(
-                    0deg,
-                    transparent,
-                    transparent 50px,
-                    rgba(99, 102, 241, 0.02) 50px,
-                    rgba(99, 102, 241, 0.02) 51px
-                ),
-                repeating-linear-gradient(
-                    90deg,
-                    transparent,
-                    transparent 50px,
-                    rgba(139, 92, 246, 0.02) 50px,
-                    rgba(139, 92, 246, 0.02) 51px
-                ),
-                radial-gradient(circle at 20% 80%, rgba(99, 102, 241, 0.05) 0%, transparent 50%),
-                radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.05) 0%, transparent 50%),
-                #fafbfc;
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        .header {
-            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%);
-            color: white;
-            padding: 3rem 2rem;
-            border-radius: 16px;
-            margin-bottom: 3rem;
-            text-align: center;
-            position: relative;
-            box-shadow: 
-                0 20px 25px -5px rgba(99, 102, 241, 0.1),
-                0 10px 10px -5px rgba(99, 102, 241, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        .content {
-            background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
-            padding: 3rem;
-            border-radius: 20px;
-            box-shadow: 
-                0 10px 15px -3px rgba(0, 0, 0, 0.1),
-                0 4px 6px -2px rgba(0, 0, 0, 0.05);
-            border: 1px solid rgba(99, 102, 241, 0.06);
-            margin-bottom: 3rem;
-            position: relative;
-            overflow: hidden;
-        }
-        .content::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, #6366f1, #8b5cf6, #a855f7, #ec4899);
-        }
-        .nav-back {
-            display: inline-block;
-            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-            color: white;
-            padding: 0.75rem 1.5rem;
-            text-decoration: none;
-            border-radius: 12px;
-            margin: 2rem 0;
-            font-weight: 500;
-            transition: all 0.2s ease;
-            box-shadow: 0 2px 4px rgba(99, 102, 241, 0.2);
-        }
-        .nav-back:hover {
-            background: linear-gradient(135deg, #5855eb 0%, #7c3aed 100%);
-            transform: translateY(-1px);
-            box-shadow: 0 4px 8px rgba(99, 102, 241, 0.3);
-        }
-        .github-corner {
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: 80px;
-            height: 80px;
-            overflow: hidden;
-        }
-        .github-corner svg {
-            fill: rgba(255, 255, 255, 0.9);
-            color: #667eea;
-            position: absolute;
-            top: 0;
-            border: 0;
-            right: 0;
-        }
-        .github-corner:hover svg {
-            fill: rgba(255, 255, 255, 1);
-        }
-        h1, h2, h3, h4, h5, h6 {
-            color: #374151;
-        }
-        .header h1 {
-            color: white;
-        }
-        h1 { font-size: 2rem; margin-top: 2rem; }
-        h2 { font-size: 1.5rem; margin-top: 1.5rem; border-bottom: 2px solid #e5e7eb; padding-bottom: 0.5rem; }
-        h3 { font-size: 1.3rem; margin-top: 1.3rem; }
-        h4 { font-size: 1.1rem; margin-top: 1.1rem; }
-        ul, ol { padding-left: 2rem; }
-        blockquote {
-            border-left: 4px solid #6366f1;
-            margin: 1rem 0;
-            padding-left: 1rem;
-            color: #666;
-        }
-        .footer {
-            background: linear-gradient(135deg, #1f2937 0%, #374151 100%);
-            color: rgba(255, 255, 255, 0.9);
-            text-align: center;
-            padding: 4rem 2rem 3rem 2rem;
-            margin-top: 4rem;
-            border-top: 4px solid transparent;
-            border-image: linear-gradient(90deg, #6366f1, #8b5cf6, #a855f7, #ec4899) 1;
-            position: relative;
-            width: 100%;
-            box-sizing: border-box;
-        }
-        .footer::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, #6366f1, #8b5cf6, #a855f7, #ec4899, transparent);
-        }
-        .footer p {
-            margin: 0.5rem 0;
-            opacity: 0.8;
-        }
-        .footer .footer-brand {
-            font-size: 1.1rem;
-            font-weight: 500;
-            opacity: 1;
-            margin-bottom: 1rem;
-        }
-        
-        /* Code styling */
-        code {
-            background: rgba(99, 102, 241, 0.08);
-            color: #6366f1;
-            padding: 0.2em 0.4em;
-            border-radius: 6px;
-            font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
-            font-size: 0.9em;
-            font-weight: 500;
-            border: 1px solid rgba(99, 102, 241, 0.12);
-        }
-        
-        pre {
-            background: linear-gradient(145deg, #f8fafc 0%, #f1f5f9 100%);
-            border: 1px solid rgba(99, 102, 241, 0.1);
-            border-radius: 12px;
-            padding: 1.5rem;
-            margin: 1.5rem 0;
-            overflow-x: auto;
-            box-shadow: 
-                0 4px 6px -1px rgba(0, 0, 0, 0.05),
-                0 2px 4px -1px rgba(0, 0, 0, 0.03);
-        }
-        
-        pre code {
-            background: none;
-            color: #374151;
-            padding: 0;
-            border-radius: 0;
-            border: none;
-            font-size: 0.875rem;
-            line-height: 1.6;
-            font-weight: 400;
-        }
-        
-        pre:hover {
-            box-shadow: 
-                0 10px 15px -3px rgba(99, 102, 241, 0.08),
-                0 4px 6px -2px rgba(99, 102, 241, 0.04);
-        }
-    </style>
+    <link rel="stylesheet" href="shared-styles.css">
+
 </head>
 <body>
     <div class="container">
@@ -214,21 +22,27 @@
         </div>
         
         <div class="content">
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <a href="index.html" class="nav-back">← Back to Documentation Index</a>
+            </div>
 <h1>MPMC Queue Algorithm</h1>
-This document explains the core algorithm and data structures used in the lockless MPMC queue.
+<p>This document explains the core algorithm and data structures used in the lockless MPMC queue.</p>
 <h2>Algorithm Background</h2>
-The queue combines ideas from several research algorithms:
-<br>
-- <strong>Michael & Scott (1996)</strong>: Lock-free queue with atomic operations
-- <strong>LMAX Disruptor</strong>: Sequence-based coordination and cache optimization
-- <strong>1024cores research</strong>: Memory ordering optimization
+<p>The queue combines ideas from several research algorithms:</p>
+<ul>
+<li><strong>Michael & Scott (1996)</strong>: Lock-free queue with atomic operations</li>
+<li><strong>LMAX Disruptor</strong>: Sequence-based coordination and cache optimization</li>
+<li><strong>1024cores research</strong>: Memory ordering optimization</li>
+</ul>
 <h3>Key Innovations</h3>
-1. <strong>Ring Buffer</strong>: Fixed-size buffer instead of linked list for better cache performance
-2. <strong>Sequence Numbers</strong>: Each slot uses atomic sequence numbers for coordination
-3. <strong>Power-of-2 Sizing</strong>: Enables fast bitwise AND instead of expensive modulo
-4. <strong>Cache-Line Alignment</strong>: Separate cache lines for producer/consumer positions
+<ol>
+<li><strong>Ring Buffer</strong>: Fixed-size buffer instead of linked list for better cache performance</li>
+<li><strong>Sequence Numbers</strong>: Each slot uses atomic sequence numbers for coordination</li>
+<li><strong>Power-of-2 Sizing</strong>: Enables fast bitwise AND instead of expensive modulo</li>
+<li><strong>Cache-Line Alignment</strong>: Separate cache lines for producer/consumer positions</li>
+</ol>
 <h2>Memory Layout</h2>
-<pre><code>
+<pre><code class="language-rust">
 struct MpmcQueue&lt;T&gt; {
     buffer: Box&lt;[Slot&lt;T&gt;]&gt;,
     capacity: usize,
@@ -236,31 +50,28 @@ struct MpmcQueue&lt;T&gt; {
     producer_pos: ProducerPos,    // 64-byte aligned
     consumer_pos: ConsumerPos,    // 64-byte aligned
 }
-
 struct Slot&lt;T&gt; {
     sequence: AtomicUsize,        // Coordination mechanism
     data: UnsafeCell&lt;MaybeUninit&lt;T&gt;&gt;, // Storage
 }
 </code></pre>
 <h3>Cache Optimization</h3>
-- Producer and consumer positions are in separate cache lines (64-byte aligned)
-- Prevents false sharing between producers and consumers
-- Each slot is independently cacheable
+<ul>
+<li>Producer and consumer positions are in separate cache lines (64-byte aligned)</li>
+<li>Prevents false sharing between producers and consumers</li>
+<li>Each slot is independently cacheable</li>
+</ul>
 <h2>Sequence Number States</h2>
 <pre><code>
 Slot States (8-element queue example):
-
 Initial: [0][1][2][3][4][5][6][7] ← Sequence numbers
          [∅][∅][∅][∅][∅][∅][∅][∅] ← Data (empty)
-
 After producer writes to slot 0:
          [1][1][2][3][4][5][6][7] ← Sequences
          [A][∅][∅][∅][∅][∅][∅][∅] ← Data
-
 After consumer reads from slot 0:
          [8][1][2][3][4][5][6][7] ← Sequences  
          [∅][∅][∅][∅][∅][∅][∅][∅] ← Data (consumed)
-
 Sequence States:
 • seq == index: Ready for producer
 • seq == index + 1: Ready for consumer
@@ -268,38 +79,54 @@ Sequence States:
 </code></pre>
 <h2>Operation Flow</h2>
 <h3>Producer (Send)</h3>
-1. Load current head position
-2. Calculate slot index using <code>head & mask</code>
-3. Check if slot sequence equals expected value
-4. If yes, try CAS to claim slot
-5. Store data and update sequence to signal completion
-<h3>Consumer (Receive)  </h3>
-1. Load current tail position
-2. Calculate slot index using <code>tail & mask</code>
-3. Check if slot sequence equals <code>tail + 1</code> (data ready)
-4. If yes, try CAS to claim slot
-5. Read data and advance sequence to mark slot available
+<ol>
+<li>Load current head position</li>
+<li>Calculate slot index using <code>head & mask</code></li>
+<li>Check if slot sequence equals expected value</li>
+<li>If yes, try CAS to claim slot</li>
+<li>Store data and update sequence to signal completion</li>
+</ol>
+<h3>Consumer (Receive)</h3>
+<ol>
+<li>Load current tail position</li>
+<li>Calculate slot index using <code>tail & mask</code></li>
+<li>Check if slot sequence equals <code>tail + 1</code> (data ready)</li>
+<li>If yes, try CAS to claim slot</li>
+<li>Read data and advance sequence to mark slot available</li>
+</ol>
 <h2>Performance Characteristics</h2>
-- Sub-10ns latency per operation
-- Linear scaling up to 8 producer/consumer threads
-- No convoy effects due to lockless design
-- Optimized cache access patterns minimize memory latency
+<ul>
+<li>Sub-10ns latency per operation</li>
+<li>Linear scaling up to 8 producer/consumer threads</li>
+<li>No convoy effects due to lockless design</li>
+<li>Optimized cache access patterns minimize memory latency</li>
+</ul>
 <h2>Load Balancing</h2>
-The queue automatically balances work between consumers based on their processing speed:
-<br>
-- Fast consumers naturally get more items due to higher CAS success rates
-- Slow consumers are never starved due to temporal windows when fast consumers are processing
-- No explicit priority system needed - pure competition through atomic operations
-- Queue buffering prevents deadlock scenarios
+<p>The queue automatically balances work between consumers based on their processing speed:</p>
+<ul>
+<li>Fast consumers naturally get more items due to higher CAS success rates</li>
+<li>Slow consumers are never starved due to temporal windows when fast consumers are processing</li>
+<li>No explicit priority system needed - pure competition through atomic operations</li>
+<li>Queue buffering prevents deadlock scenarios</li>
+</ul>
 <h2>Key Benefits</h2>
-- <strong>Automatic fairness</strong>: Work distribution matches consumer capabilities
-- <strong>No starvation</strong>: All consumers eventually get items to process  
-- <strong>Natural backpressure</strong>: Queue fills if consumers can't keep up with producers
-- <strong>Scalable</strong>: Performance scales linearly with thread count up to hardware limits
+<ul>
+<li><strong>Automatic fairness</strong>: Work distribution matches consumer capabilities</li>
+<li><strong>No starvation</strong>: All consumers eventually get items to process</li>
+<li><strong>Natural backpressure</strong>: Queue fills if consumers can't keep up with producers</li>
+<li><strong>Scalable</strong>: Performance scales linearly with thread count up to hardware limits</li>
+</ul>
         </div>
         
-        <div style="text-align: center; margin-bottom: 2rem;">
-            <a href="index.html" class="nav-back">← Back to Documentation Index</a>
+        <div class="nav-grid">
+            <div class="nav-card">
+                <h2>📚 Related Documentation</h2>
+                <p>Explore the complete technical documentation suite for the MPMC Queue implementation.</p>
+                <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+                    <a href="index.html" style="flex: 1; text-align: center;">Documentation Index</a>
+                    <a href="../benchmarks/report/index.html" style="flex: 1; text-align: center;">Benchmark Results</a>
+                </div>
+            </div>
         </div>
     </div>
 

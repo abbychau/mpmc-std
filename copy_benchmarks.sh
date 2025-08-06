@@ -36,325 +36,7 @@ cat > docs/index.html << 'EOF'
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MPMC Queue Documentation</title>
-    <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', sans-serif;
-            line-height: 1.6;
-            color: #1a202c;
-            margin: 0;
-            padding: 0;
-            background: 
-                linear-gradient(135deg, rgba(99, 102, 241, 0.03) 0%, rgba(139, 92, 246, 0.03) 100%),
-                repeating-linear-gradient(
-                    0deg,
-                    transparent,
-                    transparent 50px,
-                    rgba(99, 102, 241, 0.02) 50px,
-                    rgba(99, 102, 241, 0.02) 51px
-                ),
-                repeating-linear-gradient(
-                    90deg,
-                    transparent,
-                    transparent 50px,
-                    rgba(139, 92, 246, 0.02) 50px,
-                    rgba(139, 92, 246, 0.02) 51px
-                ),
-                radial-gradient(circle at 20% 80%, rgba(99, 102, 241, 0.05) 0%, transparent 50%),
-                radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.05) 0%, transparent 50%),
-                #fafbfc;
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        .header {
-            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%);
-            color: white;
-            padding: 3rem 2rem;
-            border-radius: 16px;
-            margin-bottom: 3rem;
-            text-align: center;
-            position: relative;
-            box-shadow: 
-                0 20px 25px -5px rgba(99, 102, 241, 0.1),
-                0 10px 10px -5px rgba(99, 102, 241, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        .header h1 {
-            margin: 0 0 0.5rem 0;
-            font-size: 2.5rem;
-            font-weight: 300;
-        }
-        .header .subtitle {
-            margin: 0 0 1rem 0;
-            opacity: 0.9;
-            font-size: 1.1rem;
-        }
-        .header .performance-highlights {
-            margin-top: 1rem;
-            font-size: 0.95rem;
-            opacity: 0.95;
-            line-height: 1.4;
-        }
-        .header .performance-highlights ul {
-            list-style: none;
-            padding: 0;
-            margin: 0.5rem 0 0 0;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 1.5rem;
-        }
-        .header .performance-highlights li {
-            margin: 0;
-        }
-        .github-corner {
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: 80px;
-            height: 80px;
-            overflow: hidden;
-        }
-        .github-corner svg {
-            fill: rgba(255, 255, 255, 0.9);
-            color: #667eea;
-            position: absolute;
-            top: 0;
-            border: 0;
-            right: 0;
-        }
-        .github-corner:hover svg {
-            fill: rgba(255, 255, 255, 1);
-        }
-        .nav-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-        .nav-card {
-            background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
-            border-radius: 16px;
-            padding: 2rem;
-            box-shadow: 
-                0 4px 6px -1px rgba(0, 0, 0, 0.1),
-                0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            border: 1px solid rgba(99, 102, 241, 0.08);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
-        }
-        .nav-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, #6366f1, #8b5cf6, #a855f7);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-        .nav-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 
-                0 20px 25px -5px rgba(99, 102, 241, 0.1),
-                0 10px 10px -5px rgba(99, 102, 241, 0.04);
-            border-color: rgba(99, 102, 241, 0.15);
-        }
-        .nav-card:hover::before {
-            opacity: 1;
-        }
-        .nav-card h2 {
-            margin-top: 0;
-            color: #374151;
-            font-size: 1.4rem;
-            font-weight: 600;
-            margin-bottom: 1rem;
-        }
-        .nav-card p {
-            color: #6b7280;
-            margin-bottom: 1.5rem;
-            line-height: 1.6;
-        }
-        .nav-card a {
-            display: inline-block;
-            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-            color: white;
-            padding: 0.75rem 1.5rem;
-            text-decoration: none;
-            border-radius: 12px;
-            transition: all 0.2s ease;
-            font-weight: 500;
-            box-shadow: 0 2px 4px rgba(99, 102, 241, 0.2);
-        }
-        .nav-card a:hover {
-            background: linear-gradient(135deg, #5855eb 0%, #7c3aed 100%);
-            transform: translateY(-1px);
-            box-shadow: 0 4px 8px rgba(99, 102, 241, 0.3);
-        }
-        .benchmark-section {
-            background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
-            border-radius: 20px;
-            padding: 3rem;
-            box-shadow: 
-                0 10px 15px -3px rgba(0, 0, 0, 0.1),
-                0 4px 6px -2px rgba(0, 0, 0, 0.05);
-            border: 1px solid rgba(99, 102, 241, 0.06);
-            margin-bottom: 3rem;
-            position: relative;
-            overflow: hidden;
-        }
-        .benchmark-section::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, #6366f1, #8b5cf6, #a855f7, #ec4899);
-        }
-        .benchmark-section h2 {
-            color: #374151;
-            border-bottom: 2px solid #e5e7eb;
-            padding-bottom: 1rem;
-            margin-bottom: 2rem;
-            font-weight: 600;
-            font-size: 1.75rem;
-        }
-        .benchmark-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1.5rem;
-            margin-top: 2rem;
-        }
-        @media (max-width: 768px) {
-            .benchmark-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-        @media (max-width: 1024px) and (min-width: 769px) {
-            .benchmark-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-        .benchmark-item {
-            background: linear-gradient(145deg, #ffffff 0%, #f9fafb 100%);
-            padding: 1.75rem;
-            border-radius: 16px;
-            border: 1px solid rgba(99, 102, 241, 0.15);
-            transition: all 0.3s ease;
-            position: relative;
-        }
-        .benchmark-item:hover {
-            transform: translateY(-2px);
-            box-shadow: 
-                0 10px 15px -3px rgba(99, 102, 241, 0.1),
-                0 4px 6px -2px rgba(99, 102, 241, 0.05);
-        }
-        .benchmark-item h4 {
-            margin-top: 0;
-            margin-bottom: 1rem;
-            color: #374151;
-            font-weight: 600;
-            font-size: 1.1rem;
-        }
-        .benchmark-item p {
-            color: #6b7280;
-            margin-bottom: 1.25rem;
-            line-height: 1.5;
-        }
-        .benchmark-item a {
-            color: #6366f1;
-            text-decoration: none;
-            font-weight: 500;
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-            background: rgba(99, 102, 241, 0.05);
-            transition: all 0.2s ease;
-            display: inline-block;
-        }
-        .benchmark-item a:hover {
-            background: rgba(99, 102, 241, 0.1);
-            transform: translateX(2px);
-        }
-        .footer {
-            background: linear-gradient(135deg, #1f2937 0%, #374151 100%);
-            color: rgba(255, 255, 255, 0.9);
-            text-align: center;
-            padding: 4rem 2rem 3rem 2rem;
-            margin-top: 4rem;
-            border-top: 4px solid transparent;
-            border-image: linear-gradient(90deg, #6366f1, #8b5cf6, #a855f7, #ec4899) 1;
-            position: relative;
-            width: 100%;
-            box-sizing: border-box;
-        }
-        .footer::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, #6366f1, #8b5cf6, #a855f7, #ec4899, transparent);
-        }
-        .footer p {
-            margin: 0.5rem 0;
-            opacity: 0.8;
-        }
-        .footer .footer-brand {
-            font-size: 1.1rem;
-            font-weight: 500;
-            opacity: 1;
-            margin-bottom: 1rem;
-        }
-        
-        /* Code styling */
-        code {
-            background: rgba(99, 102, 241, 0.08);
-            color: #6366f1;
-            padding: 0.2em 0.4em;
-            border-radius: 6px;
-            font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
-            font-size: 0.9em;
-            font-weight: 500;
-            border: 1px solid rgba(99, 102, 241, 0.12);
-        }
-        
-        pre {
-            background: linear-gradient(145deg, #f8fafc 0%, #f1f5f9 100%);
-            border: 1px solid rgba(99, 102, 241, 0.1);
-            border-radius: 12px;
-            padding: 1.5rem;
-            margin: 1.5rem 0;
-            overflow-x: auto;
-            box-shadow: 
-                0 4px 6px -1px rgba(0, 0, 0, 0.05),
-                0 2px 4px -1px rgba(0, 0, 0, 0.03);
-        }
-        
-        pre code {
-            background: none;
-            color: #374151;
-            padding: 0;
-            border-radius: 0;
-            border: none;
-            font-size: 0.875rem;
-            line-height: 1.6;
-            font-weight: 400;
-        }
-        
-        pre:hover {
-            box-shadow: 
-                0 10px 15px -3px rgba(99, 102, 241, 0.08),
-                0 4px 6px -2px rgba(99, 102, 241, 0.04);
-        }
-    </style>
+    <link rel="stylesheet" href="shared-styles.css">
 </head>
 <body>
     <div class="container">
@@ -380,9 +62,9 @@ cat > docs/index.html << 'EOF'
 
     <div class="benchmark-section">
         <h2>📈 Performance Analysis</h2>
-        <p style="text-align: center; margin-bottom: 2rem; color: #666; font-size: 1.1rem;">
+        <p style="text-align: center; margin-bottom: 2rem; color: #475569; font-size: 1.1rem;">
             Comprehensive benchmark suite showing throughput, latency, and scaling characteristics across all scenarios.
-            <br><strong><a href="benchmarks/report/index.html" style="color: #667eea; text-decoration: none;">→ View Complete Benchmark Report</a></strong>
+            <br><strong><a href="benchmarks/report/index.html" style="color: #1e40af; text-decoration: none; padding: 0.5rem 1rem; background: linear-gradient(135deg, rgba(30, 64, 175, 0.06) 0%, rgba(30, 64, 175, 0.08) 100%); border-radius: 6px; margin-top: 0.5rem; display: inline-block; font-weight: 600; font-size: 0.9rem; border: 1px solid rgba(30, 64, 175, 0.12); transition: all 0.25s ease;">→ View Complete Benchmark Report</a></strong>
         </p>
         
         <div class="benchmark-grid">
@@ -450,81 +132,20 @@ EOF
 # Convert markdown files to HTML with proper handling
 echo "🔄 Converting markdown documentation to HTML..."
 
-# Create a Python script for markdown conversion
-cat > /tmp/md_to_html.py << 'EOF'
-#!/usr/bin/env python3
-import re
-import html
-import sys
+# Check if Node.js is available
+if ! command -v node &> /dev/null; then
+    echo "❌ Error: Node.js is required for markdown conversion. Please install Node.js."
+    exit 1
+fi
 
-def convert_markdown_to_html(filename):
-    with open(filename, 'r', encoding='utf-8') as f:
-        content = f.read()
-    
-    lines = content.split('\n')
-    result = []
-    in_code_block = False
-    
-    for i, line in enumerate(lines):
-        # Handle code blocks
-        if line.strip().startswith('```'):
-            if not in_code_block:
-                in_code_block = True
-                result.append('<pre><code>')
-            else:
-                in_code_block = False
-                result.append('</code></pre>')
-            continue
-        
-        if in_code_block:
-            # Escape HTML in code blocks
-            escaped_line = html.escape(line)
-            result.append(escaped_line)
-            continue
-        
-        # Process markdown outside code blocks
-        original_line = line
-        
-        # Headers
-        if line.startswith('##### '):
-            line = f'<h5>{line[6:]}</h5>'
-        elif line.startswith('#### '):
-            line = f'<h4>{line[5:]}</h4>'
-        elif line.startswith('### '):
-            line = f'<h3>{line[4:]}</h3>'
-        elif line.startswith('## '):
-            line = f'<h2>{line[3:]}</h2>'
-        elif line.startswith('# '):
-            line = f'<h1>{line[2:]}</h1>'
-        else:
-            # Inline code
-            line = re.sub(r'`([^`]+)`', r'<code>\1</code>', line)
-            
-            # Bold text
-            line = re.sub(r'\*\*([^*]+)\*\*', r'<strong>\1</strong>', line)
-            
-            # Handle empty lines
-            if line.strip() == '':
-                # Check surrounding lines for headings
-                prev_is_heading = i > 0 and any(lines[i-1].startswith('#' * j + ' ') for j in range(1, 6))
-                next_is_heading = i < len(lines) - 1 and any(lines[i+1].startswith('#' * j + ' ') for j in range(1, 6))
-                
-                if prev_is_heading or next_is_heading:
-                    continue  # Skip empty lines around headings
-                else:
-                    line = '<br>'
-        
-        result.append(line)
-    
-    return '\n'.join(result)
+# Ensure the markdown converter script exists
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+MARKDOWN_CONVERTER="$SCRIPT_DIR/scripts/markdown-converter.js"
 
-if __name__ == '__main__':
-    if len(sys.argv) != 2:
-        print("Usage: python3 md_to_html.py <filename>")
-        sys.exit(1)
-    
-    print(convert_markdown_to_html(sys.argv[1]))
-EOF
+if [ ! -f "$MARKDOWN_CONVERTER" ]; then
+    echo "❌ Error: Markdown converter script not found at $MARKDOWN_CONVERTER"
+    exit 1
+fi
 
 # Function to create HTML file with proper structure and professional styling
 create_html_doc() {
@@ -541,200 +162,8 @@ create_html_doc() {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>$title - MPMC Queue</title>
-    <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', sans-serif;
-            line-height: 1.6;
-            color: #1a202c;
-            margin: 0;
-            padding: 0;
-            background: 
-                linear-gradient(135deg, rgba(99, 102, 241, 0.03) 0%, rgba(139, 92, 246, 0.03) 100%),
-                repeating-linear-gradient(
-                    0deg,
-                    transparent,
-                    transparent 50px,
-                    rgba(99, 102, 241, 0.02) 50px,
-                    rgba(99, 102, 241, 0.02) 51px
-                ),
-                repeating-linear-gradient(
-                    90deg,
-                    transparent,
-                    transparent 50px,
-                    rgba(139, 92, 246, 0.02) 50px,
-                    rgba(139, 92, 246, 0.02) 51px
-                ),
-                radial-gradient(circle at 20% 80%, rgba(99, 102, 241, 0.05) 0%, transparent 50%),
-                radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.05) 0%, transparent 50%),
-                #fafbfc;
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        .header {
-            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%);
-            color: white;
-            padding: 3rem 2rem;
-            border-radius: 16px;
-            margin-bottom: 3rem;
-            text-align: center;
-            position: relative;
-            box-shadow: 
-                0 20px 25px -5px rgba(99, 102, 241, 0.1),
-                0 10px 10px -5px rgba(99, 102, 241, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        .content {
-            background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
-            padding: 3rem;
-            border-radius: 20px;
-            box-shadow: 
-                0 10px 15px -3px rgba(0, 0, 0, 0.1),
-                0 4px 6px -2px rgba(0, 0, 0, 0.05);
-            border: 1px solid rgba(99, 102, 241, 0.06);
-            margin-bottom: 3rem;
-            position: relative;
-            overflow: hidden;
-        }
-        .content::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, #6366f1, #8b5cf6, #a855f7, #ec4899);
-        }
-        .nav-back {
-            display: inline-block;
-            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-            color: white;
-            padding: 0.75rem 1.5rem;
-            text-decoration: none;
-            border-radius: 12px;
-            margin: 2rem 0;
-            font-weight: 500;
-            transition: all 0.2s ease;
-            box-shadow: 0 2px 4px rgba(99, 102, 241, 0.2);
-        }
-        .nav-back:hover {
-            background: linear-gradient(135deg, #5855eb 0%, #7c3aed 100%);
-            transform: translateY(-1px);
-            box-shadow: 0 4px 8px rgba(99, 102, 241, 0.3);
-        }
-        .github-corner {
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: 80px;
-            height: 80px;
-            overflow: hidden;
-        }
-        .github-corner svg {
-            fill: rgba(255, 255, 255, 0.9);
-            color: #667eea;
-            position: absolute;
-            top: 0;
-            border: 0;
-            right: 0;
-        }
-        .github-corner:hover svg {
-            fill: rgba(255, 255, 255, 1);
-        }
-        h1, h2, h3, h4, h5, h6 {
-            color: #374151;
-        }
-        .header h1 {
-            color: white;
-        }
-        h1 { font-size: 2rem; margin-top: 2rem; }
-        h2 { font-size: 1.5rem; margin-top: 1.5rem; border-bottom: 2px solid #e5e7eb; padding-bottom: 0.5rem; }
-        h3 { font-size: 1.3rem; margin-top: 1.3rem; }
-        h4 { font-size: 1.1rem; margin-top: 1.1rem; }
-        ul, ol { padding-left: 2rem; }
-        blockquote {
-            border-left: 4px solid #6366f1;
-            margin: 1rem 0;
-            padding-left: 1rem;
-            color: #666;
-        }
-        .footer {
-            background: linear-gradient(135deg, #1f2937 0%, #374151 100%);
-            color: rgba(255, 255, 255, 0.9);
-            text-align: center;
-            padding: 4rem 2rem 3rem 2rem;
-            margin-top: 4rem;
-            border-top: 4px solid transparent;
-            border-image: linear-gradient(90deg, #6366f1, #8b5cf6, #a855f7, #ec4899) 1;
-            position: relative;
-            width: 100%;
-            box-sizing: border-box;
-        }
-        .footer::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, #6366f1, #8b5cf6, #a855f7, #ec4899, transparent);
-        }
-        .footer p {
-            margin: 0.5rem 0;
-            opacity: 0.8;
-        }
-        .footer .footer-brand {
-            font-size: 1.1rem;
-            font-weight: 500;
-            opacity: 1;
-            margin-bottom: 1rem;
-        }
-        
-        /* Code styling */
-        code {
-            background: rgba(99, 102, 241, 0.08);
-            color: #6366f1;
-            padding: 0.2em 0.4em;
-            border-radius: 6px;
-            font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
-            font-size: 0.9em;
-            font-weight: 500;
-            border: 1px solid rgba(99, 102, 241, 0.12);
-        }
-        
-        pre {
-            background: linear-gradient(145deg, #f8fafc 0%, #f1f5f9 100%);
-            border: 1px solid rgba(99, 102, 241, 0.1);
-            border-radius: 12px;
-            padding: 1.5rem;
-            margin: 1.5rem 0;
-            overflow-x: auto;
-            box-shadow: 
-                0 4px 6px -1px rgba(0, 0, 0, 0.05),
-                0 2px 4px -1px rgba(0, 0, 0, 0.03);
-        }
-        
-        pre code {
-            background: none;
-            color: #374151;
-            padding: 0;
-            border-radius: 0;
-            border: none;
-            font-size: 0.875rem;
-            line-height: 1.6;
-            font-weight: 400;
-        }
-        
-        pre:hover {
-            box-shadow: 
-                0 10px 15px -3px rgba(99, 102, 241, 0.08),
-                0 4px 6px -2px rgba(99, 102, 241, 0.04);
-        }
-    </style>
+    <link rel="stylesheet" href="shared-styles.css">
+
 </head>
 <body>
     <div class="container">
@@ -751,17 +180,27 @@ create_html_doc() {
         </div>
         
         <div class="content">
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <a href="index.html" class="nav-back">← Back to Documentation Index</a>
+            </div>
 EOF
 
     # Convert and append markdown content
-    python3 /tmp/md_to_html.py "$md_file" >> "$html_file"
+    node "$MARKDOWN_CONVERTER" "$md_file" >> "$html_file"
     
-    # Close content div and add navigation button
+    # Close content div and add navigation section
     cat >> "$html_file" << 'EOF'
         </div>
         
-        <div style="text-align: center; margin-bottom: 2rem;">
-            <a href="index.html" class="nav-back">← Back to Documentation Index</a>
+        <div class="nav-grid">
+            <div class="nav-card">
+                <h2>📚 Related Documentation</h2>
+                <p>Explore the complete technical documentation suite for the MPMC Queue implementation.</p>
+                <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+                    <a href="index.html" style="flex: 1; text-align: center;">Documentation Index</a>
+                    <a href="../benchmarks/report/index.html" style="flex: 1; text-align: center;">Benchmark Results</a>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -791,8 +230,7 @@ if [ -f "README.md" ]; then
     cp README.md docs/README.html
 fi
 
-# Cleanup
-rm -f /tmp/md_to_html.py
+# No cleanup needed - using standalone JS script
 
 echo "✅ Documentation site created!"
 echo ""

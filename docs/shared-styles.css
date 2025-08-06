@@ -1,0 +1,848 @@
+/* MPMC Queue Documentation - Shared Professional Styles */
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', sans-serif;
+    line-height: 1.5;
+    color: #0f172a;
+    margin: 0;
+    padding: 0;
+    background: 
+        radial-gradient(circle at 25% 25%, rgba(30, 64, 175, 0.03) 0%, transparent 50%),
+        radial-gradient(circle at 75% 75%, rgba(55, 48, 163, 0.03) 0%, transparent 50%),
+        linear-gradient(135deg, #f8fafc 0%, #f1f5f9 50%, #e2e8f0 100%);
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+}
+
+/* Enhanced animated grid background */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        linear-gradient(90deg, rgba(30, 64, 175, 0.02) 1px, transparent 1px),
+        linear-gradient(180deg, rgba(30, 64, 175, 0.02) 1px, transparent 1px),
+        radial-gradient(circle at 50% 50%, rgba(30, 64, 175, 0.01) 1px, transparent 1px);
+    background-size: 60px 60px, 60px 60px, 30px 30px;
+    animation: professionalGrid 25s linear infinite;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.7;
+}
+
+@keyframes professionalGrid {
+    0% {
+        background-position: 0 0, 0 0, 0 0;
+        opacity: 0.7;
+    }
+    50% {
+        opacity: 0.4;
+    }
+    100% {
+        background-position: 60px 60px, 60px 60px, 30px 30px;
+        opacity: 0.7;
+    }
+}
+
+/* Professional floating elements */
+body::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        radial-gradient(ellipse at 15% 15%, rgba(30, 64, 175, 0.04) 0%, transparent 35%),
+        radial-gradient(ellipse at 85% 85%, rgba(55, 48, 163, 0.04) 0%, transparent 35%),
+        radial-gradient(ellipse at 50% 20%, rgba(88, 28, 135, 0.02) 0%, transparent 40%),
+        radial-gradient(ellipse at 20% 80%, rgba(30, 64, 175, 0.03) 0%, transparent 30%);
+    animation: professionalFloat 40s ease-in-out infinite;
+    z-index: 0;
+    pointer-events: none;
+}
+
+@keyframes professionalFloat {
+    0%, 100% {
+        background-position: 15% 15%, 85% 85%, 50% 20%, 20% 80%;
+        opacity: 1;
+    }
+    25% {
+        background-position: 25% 10%, 75% 90%, 60% 15%, 15% 85%;
+        opacity: 0.8;
+    }
+    50% {
+        background-position: 35% 20%, 65% 80%, 40% 25%, 25% 75%;
+        opacity: 0.6;
+    }
+    75% {
+        background-position: 20% 25%, 80% 75%, 55% 30%, 30% 70%;
+        opacity: 0.8;
+    }
+}
+
+.container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 12px;
+    position: relative;
+    z-index: 1;
+}
+
+/* Professional Header Styles */
+.header {
+    background: 
+        linear-gradient(135deg, #0f172a 0%, #1e293b 30%, #1e40af 70%, #3730a3 100%),
+        radial-gradient(ellipse at 20% 20%, rgba(30, 64, 175, 0.2) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 80%, rgba(55, 48, 163, 0.15) 0%, transparent 50%),
+        linear-gradient(45deg, transparent 40%, rgba(255, 255, 255, 0.02) 50%, transparent 60%);
+    color: white;
+    padding: 2.25rem 1.75rem;
+    border-radius: 20px;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    position: relative;
+    box-shadow: 
+        0 32px 64px -12px rgba(30, 64, 175, 0.25),
+        0 20px 25px -5px rgba(0, 0, 0, 0.1),
+        0 0 0 1px rgba(255, 255, 255, 0.05) inset,
+        0 1px 0 rgba(255, 255, 255, 0.1) inset;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    overflow: hidden;
+}
+
+/* Enhanced animated shimmer effect */
+.header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 200%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.08),
+        rgba(255, 255, 255, 0.12),
+        rgba(255, 255, 255, 0.08),
+        transparent
+    );
+    animation: professionalShimmer 4s ease-in-out infinite;
+}
+
+/* Subtle texture overlay */
+.header::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.03) 0%, transparent 50%),
+        radial-gradient(circle at 70% 70%, rgba(255, 255, 255, 0.02) 0%, transparent 50%);
+    z-index: 1;
+    pointer-events: none;
+}
+
+@keyframes professionalShimmer {
+    0% { 
+        left: -100%; 
+        opacity: 0;
+    }
+    10% {
+        opacity: 1;
+    }
+    90% {
+        opacity: 1;
+    }
+    100% { 
+        left: 100%; 
+        opacity: 0;
+    }
+}
+
+.header h1 {
+    margin: 0 0 0.5rem 0;
+    font-size: 2.25rem;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    background: linear-gradient(135deg, #ffffff 0%, #e2e8f0 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    position: relative;
+    z-index: 2;
+}
+
+.header .subtitle {
+    margin: 0 0 1.5rem 0;
+    opacity: 0.9;
+    font-size: 1rem;
+    font-weight: 400;
+    position: relative;
+    z-index: 2;
+}
+
+/* Professional Content Section */
+.content {
+    background: 
+        linear-gradient(145deg, rgba(255, 255, 255, 0.98) 0%, rgba(248, 250, 252, 0.98) 100%),
+        radial-gradient(ellipse at 10% 10%, rgba(30, 64, 175, 0.025) 0%, transparent 50%),
+        radial-gradient(ellipse at 90% 90%, rgba(55, 48, 163, 0.02) 0%, transparent 50%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.8) 0%, rgba(248, 250, 252, 0.4) 100%);
+    padding: 2.25rem;
+    border-radius: 16px;
+    box-shadow: 
+        0 8px 12px -2px rgba(30, 64, 175, 0.06),
+        0 4px 8px -2px rgba(30, 64, 175, 0.04),
+        0 0 0 1px rgba(255, 255, 255, 0.7) inset,
+        0 2px 0 rgba(255, 255, 255, 0.9) inset;
+    border: 1px solid rgba(30, 64, 175, 0.06);
+    margin-bottom: 1.5rem;
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(16px);
+}
+
+.content::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #1e40af, #3730a3, #581c87, #be185d);
+    border-radius: 16px 16px 0 0;
+}
+
+.content::after {
+    content: '';
+    position: absolute;
+    top: 4px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        radial-gradient(ellipse at 30% 20%, rgba(30, 64, 175, 0.01) 0%, transparent 40%),
+        radial-gradient(ellipse at 70% 80%, rgba(55, 48, 163, 0.008) 0%, transparent 40%);
+    z-index: 1;
+    pointer-events: none;
+}
+
+/* Navigation Back Button */
+.nav-back {
+    display: inline-block;
+    background: 
+        linear-gradient(135deg, #1e40af 0%, #3730a3 100%);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    text-decoration: none;
+    border-radius: 8px;
+    margin: 1.5rem 0;
+    font-weight: 600;
+    font-size: 0.875rem;
+    letter-spacing: 0.025em;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 
+        0 2px 4px rgba(30, 64, 175, 0.15),
+        0 1px 2px rgba(30, 64, 175, 0.1);
+    border: 1px solid rgba(30, 64, 175, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.nav-back::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transition: left 0.5s ease;
+}
+
+.nav-back:hover::before {
+    left: 100%;
+}
+
+.nav-back:hover {
+    background: 
+        linear-gradient(135deg, #1d4ed8 0%, #4338ca 100%);
+    transform: translateY(-1px);
+    box-shadow: 
+        0 4px 8px rgba(30, 64, 175, 0.2),
+        0 2px 4px rgba(30, 64, 175, 0.15);
+}
+
+/* GitHub Corner */
+.github-corner {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 80px;
+    height: 80px;
+    overflow: hidden;
+    z-index: 10;
+}
+
+.github-corner svg {
+    fill: rgba(255, 255, 255, 0.8);
+    color: #0f172a;
+    position: absolute;
+    top: 0;
+    border: 0;
+    right: 0;
+    transition: fill 0.3s ease;
+}
+
+.github-corner:hover svg {
+    fill: rgba(255, 255, 255, 1);
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+    color: #0f172a;
+    position: relative;
+    z-index: 2;
+}
+
+.header h1 {
+    color: white;
+}
+
+h1 { 
+    font-size: 2rem; 
+    margin-top: 2rem; 
+}
+
+h2 { 
+    font-size: 1.5rem; 
+    margin-top: 1.5rem; 
+    border-bottom: 2px solid rgba(30, 64, 175, 0.1); 
+    padding-bottom: 0.5rem; 
+    color: #1e40af;
+}
+
+h3 { 
+    font-size: 1.3rem; 
+    margin-top: 1.3rem; 
+    color: #1e40af; 
+}
+
+h4 { 
+    font-size: 1.1rem; 
+    margin-top: 1.1rem; 
+}
+
+ul, ol { 
+    padding-left: 2rem; 
+    position: relative;
+    z-index: 2;
+}
+
+blockquote {
+    border-left: 4px solid #1e40af;
+    margin: 1rem 0;
+    padding: 1rem 1.5rem;
+    background: linear-gradient(135deg, rgba(30, 64, 175, 0.02) 0%, rgba(30, 64, 175, 0.04) 100%);
+    border-radius: 0 8px 8px 0;
+    color: #475569;
+    font-style: italic;
+    position: relative;
+    z-index: 2;
+}
+
+/* Code styling */
+code {
+    background: rgba(30, 64, 175, 0.1);
+    color: #1e40af;
+    padding: 0.2em 0.4em;
+    border-radius: 6px;
+    font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+    font-size: 0.85em;
+    font-weight: 500;
+    border: 1px solid rgba(30, 64, 175, 0.15);
+}
+
+pre {
+    background: 
+        linear-gradient(145deg, rgba(248, 250, 252, 0.9) 0%, rgba(241, 245, 249, 0.9) 100%);
+    border: 1px solid rgba(30, 64, 175, 0.1);
+    border-radius: 12px;
+    padding: 1.25rem;
+    margin: 1.25rem 0;
+    overflow-x: auto;
+    box-shadow: 
+        0 4px 6px -1px rgba(0, 0, 0, 0.05),
+        0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    backdrop-filter: blur(5px);
+    position: relative;
+    z-index: 2;
+}
+
+pre code {
+    background: none;
+    color: #0f172a;
+    padding: 0;
+    border-radius: 0;
+    border: none;
+    font-size: 0.8rem;
+    line-height: 1.5;
+    font-weight: 400;
+}
+
+pre:hover {
+    box-shadow: 
+        0 10px 15px -3px rgba(30, 64, 175, 0.08),
+        0 4px 6px -2px rgba(30, 64, 175, 0.04);
+}
+
+/* Footer */
+.footer {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    color: rgba(255, 255, 255, 0.9);
+    text-align: center;
+    padding: 2.5rem 1.5rem 2rem 1.5rem;
+    margin-top: 3rem;
+    border-top: 4px solid transparent;
+    border-image: linear-gradient(90deg, #1e40af, #3730a3, #581c87, #be185d) 1;
+    position: relative;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.footer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #1e40af, #3730a3, #581c87, #be185d, transparent);
+}
+
+.footer p {
+    margin: 0.4rem 0;
+    opacity: 0.8;
+    font-size: 0.9rem;
+}
+
+.footer .footer-brand {
+    font-size: 1rem;
+    font-weight: 500;
+    opacity: 1;
+    margin-bottom: 0.75rem;
+}
+
+.header .subtitle {
+    margin: 0 0 1.5rem 0;
+    opacity: 0.9;
+    font-size: 1rem;
+    font-weight: 400;
+    position: relative;
+    z-index: 2;
+}
+
+/* Header Performance Highlights */
+.header .performance-highlights {
+    margin-top: 1.5rem;
+    font-size: 0.9rem;
+    opacity: 0.95;
+    line-height: 1.4;
+    position: relative;
+    z-index: 2;
+}
+
+.header .performance-highlights ul {
+    list-style: none;
+    padding: 0;
+    margin: 0.5rem 0 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 2rem;
+}
+
+.header .performance-highlights li {
+    margin: 0;
+    padding: 0.5rem 1rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 25px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+}
+
+/* Navigation Grid */
+.nav-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.nav-card {
+    background: 
+        linear-gradient(145deg, rgba(255, 255, 255, 0.98) 0%, rgba(248, 250, 252, 0.98) 100%),
+        radial-gradient(ellipse at 20% 20%, rgba(30, 64, 175, 0.02) 0%, transparent 60%),
+        radial-gradient(ellipse at 80% 80%, rgba(55, 48, 163, 0.015) 0%, transparent 60%);
+    border-radius: 12px;
+    padding: 1.25rem;
+    box-shadow: 
+        0 4px 6px -1px rgba(30, 64, 175, 0.04),
+        0 2px 4px -1px rgba(30, 64, 175, 0.03),
+        0 0 0 1px rgba(255, 255, 255, 0.6) inset,
+        0 1px 0 rgba(255, 255, 255, 0.8) inset;
+    border: 1px solid rgba(30, 64, 175, 0.08);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(12px);
+}
+
+.nav-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #1e40af, #3730a3, #581c87);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.nav-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        radial-gradient(circle at 25% 25%, rgba(30, 64, 175, 0.01) 0%, transparent 50%),
+        radial-gradient(circle at 75% 75%, rgba(55, 48, 163, 0.008) 0%, transparent 50%);
+    z-index: 1;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.nav-card:hover::after {
+    opacity: 1;
+}
+
+.nav-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 
+        0 12px 16px -4px rgba(30, 64, 175, 0.08),
+        0 8px 12px -2px rgba(30, 64, 175, 0.05),
+        0 0 0 1px rgba(255, 255, 255, 0.7) inset,
+        0 2px 0 rgba(255, 255, 255, 0.9) inset;
+    border-color: rgba(30, 64, 175, 0.12);
+}
+
+.nav-card:hover::before {
+    opacity: 1;
+}
+
+.nav-card h2 {
+    margin-top: 0;
+    color: #0f172a;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    line-height: 1.3;
+    position: relative;
+    z-index: 2;
+}
+
+.nav-card p {
+    color: #475569;
+    margin-bottom: 1rem;
+    line-height: 1.4;
+    font-size: 0.875rem;
+    position: relative;
+    z-index: 2;
+}
+
+.nav-card a {
+    display: inline-block;
+    background: 
+        linear-gradient(135deg, #1e40af 0%, #3730a3 100%);
+    color: white;
+    padding: 0.625rem 1.125rem;
+    text-decoration: none;
+    border-radius: 6px;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    font-weight: 600;
+    font-size: 0.8rem;
+    letter-spacing: 0.025em;
+    box-shadow: 
+        0 1px 3px rgba(30, 64, 175, 0.12),
+        0 1px 2px rgba(30, 64, 175, 0.24);
+    border: 1px solid rgba(30, 64, 175, 0.1);
+    position: relative;
+    overflow: hidden;
+    z-index: 2;
+}
+
+.nav-card a::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transition: left 0.5s ease;
+}
+
+.nav-card a:hover::before {
+    left: 100%;
+}
+
+.nav-card a:hover {
+    background: 
+        linear-gradient(135deg, #1d4ed8 0%, #4338ca 100%);
+    transform: translateY(-1px);
+    box-shadow: 
+        0 4px 6px rgba(30, 64, 175, 0.15),
+        0 2px 4px rgba(30, 64, 175, 0.12);
+}
+
+/* Benchmark Section */
+.benchmark-section {
+    background: 
+        linear-gradient(145deg, rgba(255, 255, 255, 0.99) 0%, rgba(248, 250, 252, 0.99) 100%),
+        radial-gradient(ellipse at 10% 10%, rgba(30, 64, 175, 0.025) 0%, transparent 50%),
+        radial-gradient(ellipse at 90% 90%, rgba(55, 48, 163, 0.02) 0%, transparent 50%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.8) 0%, rgba(248, 250, 252, 0.4) 100%);
+    border-radius: 18px;
+    padding: 2rem;
+    box-shadow: 
+        0 8px 12px -2px rgba(30, 64, 175, 0.06),
+        0 4px 8px -2px rgba(30, 64, 175, 0.04),
+        0 0 0 1px rgba(255, 255, 255, 0.7) inset,
+        0 2px 0 rgba(255, 255, 255, 0.9) inset;
+    border: 1px solid rgba(30, 64, 175, 0.06);
+    margin-bottom: 1.5rem;
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(16px);
+}
+
+.benchmark-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #1e40af, #3730a3, #581c87, #be185d);
+    border-radius: 18px 18px 0 0;
+}
+
+.benchmark-section::after {
+    content: '';
+    position: absolute;
+    top: 4px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        radial-gradient(ellipse at 30% 20%, rgba(30, 64, 175, 0.01) 0%, transparent 40%),
+        radial-gradient(ellipse at 70% 80%, rgba(55, 48, 163, 0.008) 0%, transparent 40%);
+    z-index: 1;
+    pointer-events: none;
+}
+
+.benchmark-section h2 {
+    color: #0f172a;
+    border-bottom: 1px solid rgba(30, 64, 175, 0.12);
+    padding-bottom: 0.75rem;
+    margin-bottom: 1.25rem;
+    font-weight: 600;
+    font-size: 1.375rem;
+    line-height: 1.3;
+    position: relative;
+    z-index: 2;
+}
+
+/* Benchmark Grid */
+.benchmark-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+    margin-top: 1rem;
+}
+
+@media (max-width: 768px) {
+    .benchmark-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 1024px) and (min-width: 769px) {
+    .benchmark-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+.benchmark-item {
+    background: 
+        linear-gradient(145deg, rgba(255, 255, 255, 0.99) 0%, rgba(249, 250, 251, 0.99) 100%),
+        radial-gradient(ellipse at 25% 25%, rgba(30, 64, 175, 0.015) 0%, transparent 60%),
+        radial-gradient(ellipse at 75% 75%, rgba(55, 48, 163, 0.01) 0%, transparent 60%);
+    padding: 1.25rem;
+    border-radius: 12px;
+    border: 1px solid rgba(30, 64, 175, 0.08);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    backdrop-filter: blur(10px);
+    box-shadow: 
+        0 2px 4px rgba(30, 64, 175, 0.04),
+        0 1px 2px rgba(30, 64, 175, 0.03),
+        0 0 0 1px rgba(255, 255, 255, 0.5) inset,
+        0 1px 0 rgba(255, 255, 255, 0.7) inset;
+    overflow: hidden;
+}
+
+.benchmark-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        radial-gradient(circle at 20% 20%, rgba(30, 64, 175, 0.008) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(55, 48, 163, 0.006) 0%, transparent 50%);
+    z-index: 1;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.benchmark-item:hover::before {
+    opacity: 1;
+}
+
+.benchmark-item:hover {
+    transform: translateY(-1px);
+    box-shadow: 
+        0 6px 10px -2px rgba(30, 64, 175, 0.08),
+        0 4px 6px -1px rgba(30, 64, 175, 0.06),
+        0 0 0 1px rgba(255, 255, 255, 0.6) inset,
+        0 2px 0 rgba(255, 255, 255, 0.8) inset;
+    border-color: rgba(30, 64, 175, 0.12);
+}
+
+.benchmark-item h4 {
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+    color: #0f172a;
+    font-weight: 600;
+    font-size: 0.95rem;
+    line-height: 1.3;
+    position: relative;
+    z-index: 2;
+}
+
+.benchmark-item p {
+    color: #475569;
+    margin-bottom: 0.875rem;
+    line-height: 1.4;
+    font-size: 0.825rem;
+    position: relative;
+    z-index: 2;
+}
+
+.benchmark-item a {
+    color: #1e40af;
+    text-decoration: none;
+    font-weight: 600;
+    padding: 0.5rem 0.875rem;
+    border-radius: 6px;
+    background: 
+        linear-gradient(135deg, rgba(30, 64, 175, 0.06) 0%, rgba(30, 64, 175, 0.08) 100%);
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    display: inline-block;
+    font-size: 0.75rem;
+    letter-spacing: 0.025em;
+    border: 1px solid rgba(30, 64, 175, 0.12);
+    position: relative;
+    overflow: hidden;
+    z-index: 2;
+}
+
+.benchmark-item a::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(30, 64, 175, 0.05), transparent);
+    transition: left 0.4s ease;
+}
+
+.benchmark-item a:hover::before {
+    left: 100%;
+}
+
+.benchmark-item a:hover {
+    background: 
+        linear-gradient(135deg, rgba(30, 64, 175, 0.1) 0%, rgba(30, 64, 175, 0.12) 100%);
+    transform: translateX(1px);
+    border-color: rgba(30, 64, 175, 0.18);
+    color: #1d4ed8;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 640px) {
+    .container {
+        padding: 6px;
+    }
+    
+    .header {
+        padding: 1.25rem 0.875rem;
+        margin-bottom: 0.75rem;
+    }
+    
+    .header h1 {
+        font-size: 1.625rem;
+    }
+    
+    .header .performance-highlights ul {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .benchmark-section {
+        padding: 1rem;
+        margin-bottom: 1rem;
+    }
+    
+    .nav-card {
+        padding: 1rem;
+    }
+    
+    .benchmark-item {
+        padding: 0.875rem;
+    }
+    
+    .footer {
+        padding: 1.5rem 0.875rem 1.25rem 0.875rem;
+        margin-top: 1.5rem;
+    }
+}
