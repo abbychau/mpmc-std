@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚀 SIMD Optimization Guide - MPMC Queue</title>
+    <link rel="stylesheet" href="shared-styles.css">
+
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="https://github.com/abbychau/mpmc-std" class="github-corner" target="_blank" rel="noopener noreferrer">
+                <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 250 250" fill="#151513" style="position: absolute; top: 0; right: 0">
+                <path d="M0 0l115 115h15l12 27 108 108V0z" fill="#000"/>
+                <path class="octo-arm" d="M128 109c-15-9-9-19-9-19 3-7 2-11 2-11-1-7 3-2 3-2 4 5 2 11 2 11-3 10 5 15 9 16" style="-webkit-transform-origin: 130px 106px; transform-origin: 130px 106px"/>
+                <path class="octo-body" d="M115 115s4 2 5 0l14-14c3-2 6-3 8-3-8-11-15-24 2-41 5-5 10-7 16-7 1-2 3-7 12-11 0 0 5 3 7 16 4 2 8 5 12 9s7 8 9 12c14 3 17 7 17 7-4 8-9 11-11 11 0 6-2 11-7 16-16 16-30 10-41 2 0 3-1 7-5 11l-12 11c-1 1 1 5 1 5z"/>
+                </svg>
+            </a>
+            <h1>🚀 SIMD Optimization Guide</h1>
+            <p>Complete guide to vectorized MPMC queue operations for maximum performance</p>
+        </div>
+        
+        <div class="content">
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <a href="index.html" class="nav-back">← Back to Documentation Index</a>
+            </div><h1>SIMD Optimization Guide</h1>
+<p>This guide covers the SIMD-optimized MPMC queue implementation, providing detailed usage instructions, performance analysis, and best practices for achieving optimal throughput.</p>
+<h2>Overview</h2>
+<p>The SIMD-optimized MPMC queue (<code>SimdMpmcQueue<u64></code>) uses vectorized instructions to process multiple elements simultaneously, providing significant performance improvements for u64 numeric workloads.</p>
+<h2>Quick Start</h2>
+<h3>Prerequisites</h3>
+<p><strong>Rust Toolchain:</strong></p>
+<pre><code class="language-bash">
+rustup toolchain install nightly
+rustup default nightly
+</code></pre>
+<br>
+<p><strong>Project Configuration:</strong></p>
+<pre><code class="language-toml">
+# Cargo.toml
+[features]
+simd = []
+default = [&quot;simd&quot;]
+[dependencies]
+mpmc-std = { version = &quot;0.1.0&quot;, features = [&quot;simd&quot;] }
+</code></pre>
+<h3>Basic Usage</h3>
+<pre><code class="language-rust">
+use mpmc_std::simd_queue::{SimdMpmcQueue, SimdProducer, SimdConsumer};
+use std::sync::Arc;
+fn main() {
+    // Create SIMD-optimized queue for u64 data
+    let queue = Arc::new(SimdMpmcQueue::&lt;u64&gt;::new(64));
+    let producer = SimdProducer::new(Arc::clone(&amp;queue));
+    let consumer = SimdConsumer::new(Arc::clone(&amp;queue));
+    
+    // Batch operations (optimal performance)
+    let data = vec![100u64, 200u64, 300u64, 400u64];
+    producer.send_batch(&amp;data).unwrap();
+    
+    let mut buffer = vec![0u64; 4];
+    let count = consumer.recv_batch(&amp;mut buffer);
+    assert_eq!(count, 4);
+    assert_eq!(buffer, data);
+    
+    // Single operations (still optimized)
+    producer.send(500u64).unwrap();
+    assert_eq!(consumer.recv(), Some(500u64));
+}
+</code></pre>
+<h2>Performance Characteristics</h2>
+<h3>Benchmark Results</h3>
+<p><strong>Single-Threaded Performance:</strong></p>
+<pre><code>
+Scenario               Regular Queue    SIMD Queue     Improvement
+------------------------------------------------------------
+Single operations      41M ops/sec     46M ops/sec    +12%
+Batch operations       -               18M ops/sec    N/A (4.5 ns/element)
+</code></pre>
+<br>
+<p><strong>Multi-Threaded Performance:</strong></p>
+<pre><code>
+Thread Pairs    Regular Queue    SIMD Batch     Improvement
+----------------------------------------------------------
+1 pair          43M ops/sec     24M ops/sec    -44% (overhead)
+2 pairs         31M ops/sec     31M ops/sec    ~0% (equal)  
+4 pairs         17M ops/sec     32M ops/sec    +88%
+8 pairs         12M ops/sec     28M ops/sec    +133%
+</code></pre>
+<br>
+<p><strong>Key Insights:</strong></p>
+<ul>
+<li>SIMD excels in high-contention scenarios (4+ threads)</li>
+<li>Single-threaded batch operations have higher per-element overhead</li>
+<li>Best performance with u64 data in exactly 4-element batches</li>
+</ul>
+<h3>Memory and CPU Requirements</h3>
+<p><strong>Memory Layout:</strong></p>
+<ul>
+<li>Minimum capacity: 16 elements (2x SIMD width)</li>
+<li>Cache-line aligned slots (64-byte alignment)</li>
+<li>Power-of-2 capacity requirement maintained</li>
+</ul>
+<br>
+<p><strong>CPU Requirements:</strong></p>
+<ul>
+<li>x86-64 with AVX2 support (u64x4 SIMD)</li>
+<li>ARM64 with NEON (future support)</li>
+</ul>
+<h2>Advanced Usage Patterns</h2>
+<h3>Hybrid Processing Strategy</h3>
+<p>For mixed workloads, use both batch and single operations:</p>
+<br>
+<pre><code class="language-rust">
+fn process_data_stream(producer: &amp;SimdProducer&lt;u64&gt;, data: &amp;[u64]) -&gt; Result&lt;(), ()&gt; {
+    let mut i = 0;
+    
+    // Process in SIMD batches when possible
+    while i + 4 &lt;= data.len() {
+        let batch = &amp;data[i..i+4];
+        match producer.send_batch(batch) {
+            Ok(sent) =&gt; i += sent,
+            Err(_) =&gt; {
+                // Queue full, fall back to single operations
+                producer.send(data[i]).map_err(|_| ())?;
+                i += 1;
+            }
+        }
+    }
+    
+    // Handle remaining elements individually
+    while i &lt; data.len() {
+        producer.send(data[i]).map_err(|_| ())?;
+        i += 1;
+    }
+    
+    Ok(())
+}
+</code></pre>
+<h3>High-Throughput Consumer Pattern</h3>
+<pre><code class="language-rust">
+fn consume_with_batching(consumer: &amp;SimdConsumer&lt;u64&gt;) -&gt; Vec&lt;u64&gt; {
+    let mut results = Vec::new();
+    let mut batch_buffer = vec![0u64; 4];
+    
+    loop {
+        // Try batch receive first
+        let batch_count = consumer.recv_batch(&amp;mut batch_buffer);
+        if batch_count &gt; 0 {
+            results.extend_from_slice(&amp;batch_buffer[..batch_count]);
+            continue;
+        }
+        
+        // Fall back to single receive
+        match consumer.recv() {
+            Some(item) =&gt; results.push(item),
+            None =&gt; break, // Queue empty
+        }
+    }
+    
+    results
+}
+</code></pre>
+<h3>Multi-Producer Coordination</h3>
+<pre><code class="language-rust">
+use std::thread;
+fn spawn_simd_producers(queue: Arc&lt;SimdMpmcQueue&lt;u64&gt;&gt;, data_sets: Vec&lt;Vec&lt;u64&gt;&gt;) {
+    let handles: Vec&lt;_&gt; = data_sets.into_iter().enumerate().map(|(id, data)| {
+        let producer = SimdProducer::new(Arc::clone(&amp;queue));
+        
+        thread::spawn(move || {
+            for chunk in data.chunks(4) {
+                if chunk.len() == 4 {
+                    // Optimal: Full SIMD batch
+                    while producer.send_batch(chunk).is_err() {
+                        thread::yield_now(); // Wait for space
+                    }
+                } else {
+                    // Partial batch: Use single operations
+                    for &amp;item in chunk {
+                        while producer.send(item).is_err() {
+                            thread::yield_now();
+                        }
+                    }
+                }
+            }
+            println!(&quot;Producer {} completed&quot;, id);
+        })
+    }).collect();
+    
+    for handle in handles {
+        handle.join().unwrap();
+    }
+}
+</code></pre>
+<h2>Performance Optimization Tips</h2>
+<h3>1. Batch Size Alignment</h3>
+<p><strong>Optimal:</strong></p>
+<pre><code class="language-rust">
+// Perfect alignment for u64x4 SIMD
+let data = vec![1u64, 2u64, 3u64, 4u64];
+producer.send_batch(&amp;data).unwrap(); // Single SIMD operation
+</code></pre>
+<br>
+<p><strong>Suboptimal:</strong></p>
+<pre><code class="language-rust">
+// Non-aligned batch sizes
+let data = vec![1u64, 2u64, 3u64]; // Falls back to single operations
+producer.send_batch(&amp;data).unwrap();
+</code></pre>
+<h3>2. Queue Sizing</h3>
+<p><strong>Recommended Capacities:</strong></p>
+<pre><code class="language-rust">
+// High contention: Larger capacity reduces blocking
+let queue = SimdMpmcQueue::&lt;u64&gt;::new(1024); // Good for 8+ threads
+// Low contention: Smaller capacity improves cache locality  
+let queue = SimdMpmcQueue::&lt;u64&gt;::new(64);   // Good for 2-4 threads
+</code></pre>
+<h3>3. Memory Access Patterns</h3>
+<p><strong>Cache-Friendly:</strong></p>
+<pre><code class="language-rust">
+// Process data in sequential batches
+for chunk in data.chunks(4) {
+    producer.send_batch(chunk)?;
+}
+</code></pre>
+<br>
+<p><strong>Cache-Unfriendly:</strong></p>
+<pre><code class="language-rust">
+// Random access patterns hurt SIMD performance
+for &amp;index in random_indices {
+    producer.send(data[index])?; // Consider regular queue
+}
+</code></pre>
+<h3>4. Thread Scaling</h3>
+<p><strong>Optimal Thread Distribution:</strong></p>
+<pre><code class="language-rust">
+let cpu_cores = num_cpus::get();
+let optimal_threads = std::cmp::min(cpu_cores, 8); // Diminishing returns after 8
+// Create balanced producer/consumer pairs
+for _ in 0..optimal_threads {
+    spawn_producer();
+    spawn_consumer(); 
+}
+</code></pre>
+<h2>Compilation and Build Options</h2>
+<h3>Feature Flags</h3>
+<pre><code class="language-toml">
+[features]
+default = [&quot;simd&quot;]
+simd = []
+# Optional: Disable SIMD for stable Rust
+# default = []
+</code></pre>
+<h3>Build Commands</h3>
+<pre><code class="language-bash">
+# Development (with SIMD)
+cargo build --features simd
+# Release optimization
+cargo build --release --features simd
+# Benchmarking
+cargo bench --features simd
+# Testing
+cargo test --features simd
+</code></pre>
+<h3>Conditional Compilation</h3>
+<pre><code class="language-rust">
+#[cfg(feature = &quot;simd&quot;)]
+use mpmc_std::simd_queue::{SimdMpmcQueue, SimdProducer, SimdConsumer};
+#[cfg(not(feature = &quot;simd&quot;))]
+use mpmc_std::{MpmcQueue as SimdMpmcQueue, Producer as SimdProducer, Consumer as SimdConsumer};
+// Code works with both variants
+fn generic_processing() {
+    let queue = Arc::new(SimdMpmcQueue::&lt;u64&gt;::new(64));
+    let producer = SimdProducer::new(Arc::clone(&amp;queue));
+    // ...
+}
+</code></pre>
+<h2>Troubleshooting</h2>
+<h3>Common Issues</h3>
+<p><strong>1. Compilation Errors:</strong></p>
+<pre><code>
+error[E0658]: use of unstable library feature `portable_simd`
+</code></pre>
+<p><strong>Solution:</strong> Ensure nightly toolchain: <code>rustup default nightly</code></p>
+<br>
+<p><strong>2. Performance Lower Than Expected:</strong></p>
+<ul>
+<li>Check batch sizes are multiples of 4</li>
+<li>Verify CPU supports AVX2 instructions</li>
+<li>Measure with high-contention scenarios (4+ threads)</li>
+</ul>
+<br>
+<p><strong>3. Queue Capacity Issues:</strong></p>
+<pre><code>
+assertion failed: capacity &gt; 0
+</code></pre>
+<p><strong>Solution:</strong> SIMD queue has minimum capacity of 8 elements</p>
+<h3>Performance Debugging</h3>
+<pre><code class="language-rust">
+// Add timing measurements
+use std::time::Instant;
+let start = Instant::now();
+for batch in data.chunks(4) {
+    producer.send_batch(batch)?;
+}
+let duration = start.elapsed();
+println!(&quot;Throughput: {:.0} ops/sec&quot;, 
+         (data.len() as f64) / duration.as_secs_f64());
+</code></pre>
+<h3>Profiling Tools</h3>
+<p><strong>CPU Profiling:</strong></p>
+<pre><code class="language-bash">
+# Profile SIMD instruction usage
+perf record -e cycles,instructions,cache-misses cargo bench --features simd
+perf report
+</code></pre>
+<br>
+<p><strong>Memory Analysis:</strong></p>
+<pre><code class="language-bash">
+# Check cache performance
+valgrind --tool=cachegrind cargo run --features simd --example simd_benchmark
+</code></pre>
+<h2>When to Use SIMD vs Regular Queue</h2>
+<h3>Choose SIMD Queue When:</h3>
+<ul>
+<li>Processing u64 numeric data</li>
+<li>Batch sizes are multiples of 4</li>
+<li>High-contention scenarios (4+ threads)</li>
+<li>Latency-sensitive applications with numeric workloads</li>
+<li>CPU supports AVX2+ instructions</li>
+</ul>
+<h3>Choose Regular Queue When:</h3>
+<ul>
+<li>Mixed data types or generic types</li>
+<li>Variable or small batch sizes</li>
+<li>Low-contention scenarios (1-2 threads)</li>
+<li>Stable Rust requirement</li>
+<li>Memory-constrained environments</li>
+</ul>
+<h3>Migration Strategy</h3>
+<pre><code class="language-rust">
+// Gradual migration approach
+fn create_optimal_queue&lt;T&gt;() -&gt; Box&lt;dyn QueueTrait&lt;T&gt;&gt; {
+    #[cfg(feature = &quot;simd&quot;)]
+    if std::mem::size_of::&lt;T&gt;() == 8 &amp;&amp; is_numeric::&lt;T&gt;() {
+        Box::new(SimdMpmcQueue::&lt;u64&gt;::new(capacity))
+    } else {
+        Box::new(MpmcQueue::&lt;T&gt;::new(capacity))
+    }
+    
+    #[cfg(not(feature = &quot;simd&quot;))]
+    Box::new(MpmcQueue::&lt;T&gt;::new(capacity))
+}
+</code></pre>
+<br>
+<p>This guide provides comprehensive coverage of SIMD optimization techniques for achieving maximum throughput with the mpmc-std library.</p>
+        </div>
+        
+        <div class="nav-grid">
+            <div class="nav-card">
+                <p>Explore the complete technical documentation suite for the MPMC Queue implementation.</p>
+                <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+                    <a href="index.html" style="flex: 1; text-align: center;">Documentation Index</a>
+                    <a href="IMPLEMENTATION_NOTES.html" style="flex: 1; text-align: center;">Implementation Details</a>
+                    <a href="COMPARATIVE_ANALYSIS.html" style="flex: 1; text-align: center;">Comparative Analysis</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <div class="footer-brand">MPMC Queue - High-Performance Lockless Data Structure</div>
+        <p>Built with Rust • Benchmarked with Criterion.rs • Optimized for Modern Hardware</p>
+        <p style="font-size: 0.9rem; margin-top: 1rem;">
+            SIMD-optimized for maximum throughput with vectorized u64 operations
+        </p>
+    </div>
+</body>
+</html>

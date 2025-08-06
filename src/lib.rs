@@ -1,7 +1,15 @@
+#![cfg_attr(feature = "simd", feature(portable_simd))]
+
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::Arc;
 use std::cell::UnsafeCell;
 use std::mem::MaybeUninit;
+
+#[cfg(feature = "simd")]
+use std::simd::{u64x4, Simd};
+
+#[cfg(feature = "simd")]
+pub mod simd_queue;
 
 // Cache line size for padding
 const CACHE_LINE: usize = 64;
@@ -368,3 +376,7 @@ impl<T: Send> Clone for Consumer<T> {
         }
     }
 }
+
+// Re-export SIMD optimized queue when feature is enabled
+#[cfg(feature = "simd")]
+pub use simd_queue::{SimdMpmcQueue, SimdProducer, SimdConsumer};

@@ -3,7 +3,7 @@
 # Preview documentation server script
 # Serves the docs folder using Python's built-in HTTP server
 
-PORT=${1:-8080}
+PORT=${1:-8082}
 DOCS_DIR="docs"
 
 echo "🌐 Starting documentation preview server..."

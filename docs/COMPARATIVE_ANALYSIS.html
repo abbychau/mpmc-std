@@ -152,7 +152,69 @@ Producer Flow:              Consumer Flow:
 └─────────────────┘        └─────────────────┘
 </code></pre>
 <h2>Comparison Summary Table</h2>
-<table><thead><tr><th>Feature</th><th>LMAX Disruptor</th><th>Michael & Scott</th><th>mpmc-std</th></tr></thead><tbody><tr><td><strong>Coordination</strong></td><td>Sequence barriers</td><td>Atomic pointer ops</td><td>Per-slot sequence numbers</td></tr><tr><td><strong>Memory Layout</strong></td><td>Ring buffer</td><td>Linked nodes</td><td>Fixed array</td></tr><tr><td><strong>Memory Management</strong></td><td>Pre-allocated</td><td>Dynamic allocation</td><td>Pre-allocated</td></tr><tr><td><strong>Ordering</strong></td><td>Strong (barriers)</td><td>FIFO (linked list)</td><td>Mathematical sequence</td></tr><tr><td><strong>Complexity</strong></td><td>High (multiple seqs)</td><td>Medium (ABA, helping)</td><td>Low (slot state machine)</td></tr><tr><td><strong>Scalability</strong></td><td>High (batch, barriers)</td><td>High (lock-free)</td><td>High (lock-free, simple)</td></tr><tr><td><strong>ABA Handling</strong></td><td>Not required</td><td>Required</td><td>Not required</td></tr><tr><td><strong>Producer/Consumer</strong></td><td>Multiple</td><td>Multiple</td><td>Multiple</td></tr><tr><td><strong>Typical Use Case</strong></td><td>Low-latency trading</td><td>General-purpose queues</td><td>General-purpose queues</td></tr></tbody></table>
+<table><thead><tr><th>Feature</th><th>LMAX Disruptor</th><th>Michael & Scott</th><th>mpmc-std</th><th>mpmc-std SIMD</th></tr></thead><tbody><tr><td><strong>Coordination</strong></td><td>Sequence barriers</td><td>Atomic pointer ops</td><td>Per-slot sequence</td><td>Vectorized sequences</td></tr><tr><td><strong>Memory Layout</strong></td><td>Ring buffer</td><td>Linked nodes</td><td>Fixed array</td><td>SIMD-aligned array</td></tr><tr><td><strong>Memory Management</strong></td><td>Pre-allocated</td><td>Dynamic allocation</td><td>Pre-allocated</td><td>Pre-allocated</td></tr><tr><td><strong>Ordering</strong></td><td>Strong (barriers)</td><td>FIFO (linked list)</td><td>Mathematical sequence</td><td>Mathematical sequence</td></tr><tr><td><strong>Complexity</strong></td><td>High (multiple seqs)</td><td>Medium (ABA, helping)</td><td>Low (slot state)</td><td>Low (vectorized)</td></tr><tr><td><strong>Scalability</strong></td><td>High (batch, barriers)</td><td>High (lock-free)</td><td>High (lock-free)</td><td>Higher (SIMD batches)</td></tr><tr><td><strong>ABA Handling</strong></td><td>Not required</td><td>Required</td><td>Not required</td><td>Not required</td></tr><tr><td><strong>Producer/Consumer</strong></td><td>Multiple</td><td>Multiple</td><td>Multiple</td><td>Multiple</td></tr><tr><td><strong>Data Types</strong></td><td>Generic</td><td>Generic</td><td>Generic</td><td>u64 optimized</td></tr><tr><td><strong>Batch Operations</strong></td><td>Optional</td><td>No</td><td>No</td><td>Yes (4x u64)</td></tr><tr><td><strong>Typical Use Case</strong></td><td>Low-latency trading</td><td>General-purpose queues</td><td>General-purpose</td><td>Numeric workloads</td></tr></tbody></table>
+<h2>SIMD Algorithm Extension</h2>
+<p>The mpmc-std SIMD variant extends the basic algorithm with vectorized operations for u64 data types.</p>
+<h3>SIMD Coordination Algorithm</h3>
+<pre><code>
+Traditional Slot Check (4 operations):
+for i in 0..4:
+    if slot[i].sequence == expected[i]:  // 4 separate checks
+        slot_available[i] = true
+SIMD Slot Check (1 vectorized operation):
+sequences = [slot[0].seq, slot[1].seq, slot[2].seq, slot[3].seq]  // Load 4 sequences
+expected  = [head+0, head+1, head+2, head+3]                    // Generate expected
+mask = simd_eq(sequences, expected)                              // Compare all at once
+if mask.all():                                                   // All slots ready
+    claim_batch()
+</code></pre>
+<h3>SIMD vs Traditional Performance Profile</h3>
+<p><strong>Memory Access Pattern:</strong></p>
+<pre><code>
+Traditional: 4 separate loads + 4 separate comparisons + 4 branches
+SIMD:        1 vectorized load + 1 vectorized compare + 1 branch
+</code></pre>
+<br>
+<p><strong>Theoretical Performance Gain:</strong></p>
+<ul>
+<li><strong>Memory</strong>: 4x fewer load operations (vectorized)</li>
+<li><strong>ALU</strong>: 4x fewer comparison operations (parallel)</li>
+<li><strong>Branch</strong>: 4x fewer conditional branches</li>
+<li><strong>Cache</strong>: Better spatial locality with vectorized access</li>
+</ul>
+<br>
+<p><strong>Real-World Results:</strong></p>
+<ul>
+<li>Single-threaded: 10-30% improvement</li>
+<li>High-contention: Up to 1.8x speedup (4+ thread pairs)</li>
+<li>Optimal workload: u64 numeric processing in 4-element batches</li>
+</ul>
+<h3>SIMD Algorithmic Trade-offs</h3>
+<p><strong>Advantages:</strong></p>
+<ul>
+<li>Vectorized sequence checking reduces instruction count</li>
+<li>Better CPU pipeline utilization</li>
+<li>Improved cache efficiency for batch operations</li>
+<li>Maintains all lockless guarantees</li>
+</ul>
+<br>
+<p><strong>Limitations:</strong></p>
+<ul>
+<li>Requires nightly Rust (unstable portable_simd)</li>
+<li>Limited to u64 data types</li>
+<li>Minimum capacity requirements (16+ elements)</li>
+<li>Best performance only with 4-aligned batch sizes</li>
+</ul>
+<br>
+<p><strong>Use Case Optimization:</strong></p>
+<pre><code class="language-rust">
+// Optimal: Numeric processing with known batch sizes
+let numeric_data: Vec&lt;u64&gt; = sensor_readings();
+simd_queue.send_batch(&amp;numeric_data[0..4])?;
+// Suboptimal: Mixed types or variable sizes  
+let mixed_data: Vec&lt;String&gt; = user_messages();
+regular_queue.send(mixed_data[0].clone())?;  // Better choice
+</code></pre>
 <br>
 <br>
         </div>

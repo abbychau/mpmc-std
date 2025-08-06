@@ -6,9 +6,18 @@ edition = "2024"
 [dependencies]
 tokio = { version = "1", features = ["full"] }
 
+[features]
+simd = []
+default = ["simd"]
+
 [dev-dependencies]
 criterion = { version = "0.5", features = ["html_reports"] }
 
 [[bench]]
 name = "mpmc_bench"
 harness = false
+
+[[bench]]
+name = "simd_bench"
+harness = false
+required-features = ["simd"]
